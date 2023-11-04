@@ -8,7 +8,9 @@ function create_card(card)
     cost = 1,
     rarity = 0,
     text = "shoot",
-    image = 0
+    img = 0,
+    y = 118,
+    spd = 0
   }
 
   add(cards, mycard)

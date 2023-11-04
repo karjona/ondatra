@@ -51,11 +51,22 @@ function drw_battle()
   for i = 1, #cards do
     local card = cards[i]
     local cardx = 10
-    local cardy = 118
+    local targety = 118
 
+    -- move selected card up
     if selected_card == i and viewing_cards then
-      cardy = cardy - 52
+      targety -= 52
     end
+
+    -- animate cards
+    if targety < card.y then
+      card.spd = -4
+    elseif targety > card.y then
+      card.spd = 4
+    elseif targety == card.y then
+      card.spd = 0
+    end
+    card.y += card.spd
 
     if #cards >= 3 then
       -- to get the size of the dock where we put the cards
@@ -66,11 +77,11 @@ function drw_battle()
       -- we divide the dock size by the number of cards
       -- minus one to get the gap between each card
       local gap = docksize / (#cards - 1)
-      draw_card(card, cardx + i * gap - gap, cardy)
+      draw_card(card, cardx + i * gap - gap, card.y)
     elseif #cards == 2 then
-      draw_card(card, cardx + i * 37 - 37, cardy)
+      draw_card(card, cardx + i * 37 - 37, card.y)
     else
-      draw_card(card, cardx, cardy)
+      draw_card(card, cardx, card.y)
     end
   end
 
