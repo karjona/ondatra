@@ -27,8 +27,8 @@ function start_game()
 
   -- debug cards
   create_card("my card")
-  --create_card("two cards")
-  --create_card("three")
+  create_card("two cards")
+  create_card("three")
   --create_card("four")
   --create_card("five")
 

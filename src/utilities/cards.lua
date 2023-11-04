@@ -1,6 +1,4 @@
 -- card properties
-cardx = 10
-cardy = 118
 cardw = 40
 cardh = 50
 

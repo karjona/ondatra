@@ -1,4 +1,8 @@
 function upd_battle()
+  if selected_card == nil then
+    selected_card = 1
+  end
+
   if #radio > 0 then
     if btnp(❎) then
       sfx(0)
@@ -7,16 +11,30 @@ function upd_battle()
   else
     -- no radio messages in queue
     if viewing_cards == false then
-      -- card view
+      -- map view
       if btnp(🅾️) then
         sfx(0)
         viewing_cards = true
       end
     else
-      -- map screen
+      -- card screen
       if btnp(🅾️) then
         sfx(0)
         viewing_cards = false
+      end
+
+      if btnp(⬅️) then
+        sfx(0)
+        if selected_card > 1 then
+          selected_card = selected_card - 1
+        end
+      end
+
+      if btnp(➡️) then
+        sfx(0)
+        if selected_card < #cards then
+          selected_card = selected_card + 1
+        end
       end
     end
   end
@@ -28,6 +46,13 @@ function drw_battle()
   -- draw cards
   for i = 1, #cards do
     local card = cards[i]
+    local cardx = 10
+    local cardy = 118
+
+    if selected_card == i and viewing_cards then
+      cardy = cardy - 52
+    end
+
     if #cards >= 3 then
       -- to get the size of the dock where we put the cards
       -- we substract the margins and the width of the card
