@@ -14,7 +14,7 @@ end
 
 function print_radio()
   local startx = 1
-  local starty = 96
+  local starty = 86
   local width = 125
   local height = 21
   local padding = 2
