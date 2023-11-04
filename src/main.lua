@@ -21,7 +21,16 @@ end
 
 function start_game()
   radio = {}
+
   cards = {}
+  viewing_cards = false
+
+  -- debug cards
+  create_card("my card")
+  --create_card("two cards")
+  --create_card("three")
+  --create_card("four")
+  --create_card("five")
 
   -- debug radio messages
   say("a.", "hello! this is a test radio message!", true)
