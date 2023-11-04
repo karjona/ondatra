@@ -5,7 +5,7 @@ start_time = t()
 end_time = t()
 
 function _init()
-  end_time = t() + 4
+  end_time = t() + 0.2
   _drw = drw_logo
   _upd = upd_logo
 end
@@ -20,6 +20,10 @@ function _draw()
 end
 
 function start_game()
+  radio = {}
+  say("a.", "hello! this is a test radio message!", true)
+  say("a.", "second radio message", true)
+  say("a.", "ok, that's it. bye!")
   _upd = upd_battle
   _drw = drw_battle
 end
