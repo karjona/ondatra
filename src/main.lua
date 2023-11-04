@@ -6,6 +6,7 @@ endtime = t()
 
 function _init()
   endtime = t() + 0.2
+  log("game started", true)
   _drw = drw_logo
   _upd = upd_logo
 end
