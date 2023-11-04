@@ -4,7 +4,7 @@ function upd_battle()
   end
 
   if #radio > 0 then
-    if btnp(❎) then
+    if btnp(❎) or btnp(🅾️) or btnp(⬇️) then
       sfx(0)
       deli(radio, 1)
     end
