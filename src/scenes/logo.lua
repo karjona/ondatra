@@ -1,5 +1,5 @@
 function upd_logo()
-  if t() >= end_time then
+  if t() >= endtime then
     start_game()
   end
 end
