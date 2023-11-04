@@ -13,29 +13,49 @@ function say(actor, message, multipart)
 end
 
 function print_radio()
-  local startx = 32
+  local startx = 1
   local starty = 96
-  local width = 64
+  local width = 125
   local height = 21
   local padding = 2
-  local portraits = 16
-  local messagex = startx + portraits + padding * 2 + 1
+  local portraitsize = 16
+  local messagex = startx + portraitsize + padding * 2 + 1
   local messagey = starty + padding * 2 + 1
 
+  local firstline = ""
+  local secondline = ""
+
   if #radio > 0 then
+    -- separate the message into two lines if needed
+    -- only separate lines on spaces
+    if #radio[1].message > 24 then
+      local words = split(radio[1].message, " ")
+      for i = 1, #words do
+        if #firstline + #words[i] + 1 < 24 then
+          firstline = firstline .. words[i] .. " "
+        else
+          secondline = secondline .. words[i] .. " "
+        end
+      end
+    else
+      -- if we only need one line
+      firstline = radio[1].message
+      messagey += 3
+    end
+
     rect(startx, starty, startx + width, starty + height, 7) -- outter box
-    rect(startx + padding, starty + padding, startx + padding + portraits + 1, starty + padding + portraits + 1, 7) -- portrait box
-    print(radio[1].actor, startx, starty - 6) -- actor name
-    print(radio[1].message, messagex, messagey) -- message
-    print("text test", messagex, messagey + 6) -- message second line
-    spr(1, 35, 99, 2, 2) -- portrait
+    rect(startx + padding, starty + padding, startx + padding + portraitsize + 1, starty + padding + portraitsize + 1, 7) -- portrait box
+    spr(1, startx + padding + 1, starty + padding + 1, 2, 2) -- portrait
+    print(radio[1].actor, startx + padding, starty - 6) -- actor name
+    print(firstline, messagex, messagey) -- message first line
+    print(secondline, messagex, messagey + 6) -- message second line
 
     -- button indicator
     if t() % 1 < 0.5 then
       if radio[1].multipart then
-        print("⬇️", 90, 119)
+        print("⬇️", startx + width - 6 - padding, starty + height + padding)
       else
-        print("❎", 90, 119)
+        print("❎", startx + width - 6 - padding, starty + height + padding)
       end
     end
   end
