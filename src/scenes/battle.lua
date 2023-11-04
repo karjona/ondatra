@@ -27,6 +27,8 @@ function upd_battle()
         sfx(0)
         if selected_card > 1 then
           selected_card = selected_card - 1
+        else
+          selected_card = #cards
         end
       end
 
@@ -34,6 +36,8 @@ function upd_battle()
         sfx(0)
         if selected_card < #cards then
           selected_card = selected_card + 1
+        else
+          selected_card = 1
         end
       end
     end
@@ -76,9 +80,12 @@ function drw_battle()
   -- ui
   if #radio == 0 then
     if viewing_cards == false then
-      print("🅾️ cards", 95, 1, 7)
+      print("🅾️ cards", 91, 1, 7)
+      print("❎ select", 91, 8, 7)
     else
-      print("🅾️ map", 95, 1, 7)
+      print("🅾️ map", 91, 1, 7)
+      print("❎ play", 91, 8, 7)
+      print("⬅️➡️ select", 83, 15, 7)
     end
   end
 end
