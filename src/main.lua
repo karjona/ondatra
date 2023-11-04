@@ -21,7 +21,7 @@ end
 
 function start_game()
   radio = {}
-  say("a.", "hello!")
+  say("kilian", "hello!", true)
   _upd = upd_battle
   _drw = drw_battle
 end
