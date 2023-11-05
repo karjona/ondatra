@@ -45,7 +45,14 @@ function upd_battle()
 end
 
 function drw_battle()
-  cls(1)
+  draw_bg(level)
+
+  -- draw ships
+  for entity in all(entities) do
+    if entity.type == "ship" then
+      draw_ship(entity)
+    end
+  end
 
   -- draw cards
   for i = 1, #cards do

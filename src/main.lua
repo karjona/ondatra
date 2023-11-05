@@ -21,10 +21,13 @@ function _draw()
 end
 
 function start_game()
+  level = 1
   radio = {}
 
   cards = {}
   viewing_cards = false
+
+  entities = {}
 
   -- debug cards
   create_card("my card")
@@ -37,6 +40,9 @@ function start_game()
   say("a.", "hello! this is a test radio message!", true)
   say("a.", "second radio message", true)
   say("a.", "ok, that's it. bye!")
+
+  -- debug entities
+  create_ship()
 
   _upd = upd_battle
   _drw = drw_battle
