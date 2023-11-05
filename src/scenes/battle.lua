@@ -45,7 +45,7 @@ function upd_battle()
 end
 
 function drw_battle()
-  cls(1)
+  draw_bg(level)
 
   -- draw ships
   for entity in all(entities) do

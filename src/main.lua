@@ -21,6 +21,7 @@ function _draw()
 end
 
 function start_game()
+  level = 1
   radio = {}
 
   cards = {}
