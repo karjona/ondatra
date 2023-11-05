@@ -32,6 +32,10 @@ function draw_ship(ship)
   local model = ship.model
 
   if model == "fighter" then
-    rspr(x, y, angle, 0.5, 0.5, 1, 1)
+    if t() % 5 >= 2 then
+      y -= 1
+    end
+
+    rspr(x, y, angle, 0.5, 0.5, 1, false, 1)
   end
 end
