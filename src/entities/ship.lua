@@ -28,9 +28,10 @@ end
 function draw_ship(ship)
   local x = ship.x
   local y = ship.y
+  local angle = ship.angle / 360
   local model = ship.model
 
   if model == "fighter" then
-    spr(64, x, y, 1, 1)
+    rspr(x, y, angle, 0.5, 0.5, 1, 1)
   end
 end
