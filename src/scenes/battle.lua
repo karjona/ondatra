@@ -47,6 +47,13 @@ end
 function drw_battle()
   cls(1)
 
+  -- draw ships
+  for entity in all(entities) do
+    if entity.type == "ship" then
+      draw_ship(entity)
+    end
+  end
+
   -- draw cards
   for i = 1, #cards do
     local card = cards[i]
