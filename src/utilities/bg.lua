@@ -24,6 +24,15 @@ function draw_bg(level)
       starfield()
     else
       for star in all(stars) do
+        -- 1 in 10 change of choosing this star to move
+        if rnd(100) < 1 then
+          -- 50% change of star moving 1px left, right up or down
+          if rnd(2) > 1 then
+            star[1] += rnd(2) - 1
+          else
+            star[2] += rnd(2) - 1
+          end
+        end
         pset(star[1], star[2], star[3])
       end
     end
