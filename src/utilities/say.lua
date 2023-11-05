@@ -43,7 +43,8 @@ function print_radio()
       messagey += 3
     end
 
-    rect(startx, starty, startx + width, starty + height, 7) -- outter box
+    rect(startx, starty, startx + width, starty + height, 7) -- outer box
+    rectfill(startx + 1, starty + 1, startx + width - 1, starty + height - 1, 0) -- outer fill
     rect(startx + padding, starty + padding, startx + padding + portraitsize + 1, starty + padding + portraitsize + 1, 7) -- portrait box
     spr(1, startx + padding + 1, starty + padding + 1, 2, 2) -- portrait
     print(radio[1].actor, startx + padding, starty - 6) -- actor name
