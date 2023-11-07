@@ -26,6 +26,7 @@ function start_game()
 
   cards = {}
   viewing_cards = false
+  selecting_move = false
 
   entities = {}
 

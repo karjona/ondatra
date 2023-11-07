@@ -16,6 +16,16 @@ function upd_battle()
         sfx(0)
         viewing_cards = true
       end
+      if btnp(❎) then
+        for entity in all(entities) do
+          if entity.selected then
+            if entity.type == "ship" then
+              sfx(0)
+              selecting_move = entity
+            end
+          end
+        end
+      end
     else
       -- card screen
       if btnp(🅾️) then
@@ -55,6 +65,11 @@ function drw_battle()
         draw_selsquare(entity)
       end
     end
+  end
+
+  -- draw move menu
+  if selecting_move then
+    draw_move_menu(selecting_move)
   end
 
   -- draw cards

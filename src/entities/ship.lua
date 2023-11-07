@@ -49,9 +49,9 @@ function draw_selsquare(ship)
     pal(7, 8)
   end
 
-  spr(81, x - 5, y - 5, 1, 1)
-  spr(81, x - 3, y - 5, 1, 1, true)
-  spr(81, x - 5, y - 3, 1, 1, false, true)
-  spr(81, x - 3, y - 3, 1, 1, true, true)
+  spr(80, x - 5, y - 5, 1, 1)
+  spr(80, x - 3, y - 5, 1, 1, true)
+  spr(80, x - 5, y - 3, 1, 1, false, true)
+  spr(80, x - 3, y - 3, 1, 1, true, true)
   pal()
 end
