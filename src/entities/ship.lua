@@ -11,6 +11,7 @@ function create_ship(owner, model)
     owner = owner,
     type = "ship",
     model = model,
+    selected = true,
     x = 15,
     y = 80,
     angle = 0,
@@ -38,4 +39,19 @@ function draw_ship(ship)
 
     rspr(x, y, angle, 0.5, 0.5, 1, false, 1)
   end
+end
+
+function draw_selsquare(ship)
+  local x = ship.x
+  local y = ship.y
+
+  if t() % 2 >= 0.5 then
+    pal(7, 8)
+  end
+
+  spr(81, x - 5, y - 5, 1, 1)
+  spr(81, x - 3, y - 5, 1, 1, true)
+  spr(81, x - 5, y - 3, 1, 1, false, true)
+  spr(81, x - 3, y - 3, 1, 1, true, true)
+  pal()
 end

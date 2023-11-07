@@ -51,6 +51,9 @@ function drw_battle()
   for entity in all(entities) do
     if entity.type == "ship" then
       draw_ship(entity)
+      if entity.selected then
+        draw_selsquare(entity)
+      end
     end
   end
 
