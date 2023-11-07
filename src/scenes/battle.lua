@@ -12,7 +12,7 @@ function upd_battle()
     -- no radio messages in queue
     if viewing_cards == false then
       -- map view
-      if btnp(🅾️) then
+      if btnp(🅾️) and selecting_move == false then
         sfx(0)
         viewing_cards = true
       end
