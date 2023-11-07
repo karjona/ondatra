@@ -18,6 +18,17 @@ function draw_arrow(ship)
   local x = ship.x + 50
   local y = ship.y - 50
 
+  -- 45 degree arrow
+  --spr(81, ship.x - 4, ship.y - 12)
+  --spr(84, ship.x - 4, ship.y - 20, 1, 1, true)
+  --rspr(ship.x + 2, ship.y - 16, 45 / 360, 2.5, .5, 1, false, 1)
+
+  -- 90 degree arrow
+  --spr(81, ship.x - 4, ship.y - 12)
+  --spr(83, ship.x - 4, ship.y - 20, 1, 1)
+  --rspr(ship.x + 7, ship.y - 16, 90 / 360, 2.5, .5, 1, false, 1)
+
+  -- straight arrow
   spr(81, ship.x - 4, ship.y - 12)
   spr(81, ship.x - 4, ship.y - 20)
   spr(82, ship.x - 4, ship.y - 28)

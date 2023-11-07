@@ -16,7 +16,7 @@ function upd_battle()
         sfx(0)
         viewing_cards = true
       end
-      if btnp(❎) then
+      if btnp(❎) and selecting_move == false then
         for entity in all(entities) do
           if entity.selected then
             if entity.type == "ship" then
