@@ -70,6 +70,7 @@ function drw_battle()
   -- draw move menu
   if selecting_move then
     draw_move_menu(selecting_move)
+    draw_arrow(selecting_move)
   end
 
   -- draw cards

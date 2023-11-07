@@ -13,3 +13,12 @@ function draw_move_menu(ship)
   rect(x, y, x, y + 40, outc)
   rect(x + 50, y, x + 50, y + 40, outc)
 end
+
+function draw_arrow(ship)
+  local x = ship.x + 50
+  local y = ship.y - 50
+
+  spr(81, ship.x - 4, ship.y - 12)
+  spr(81, ship.x - 4, ship.y - 20)
+  spr(82, ship.x - 4, ship.y - 28)
+end
