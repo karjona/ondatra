@@ -37,10 +37,23 @@ end
 function draw_arrow(ship, type, speed, orientation)
   local x = ship.x + 50
   local y = ship.y - 50
-  local angle = 0
   local turn_offset = 0
+  local flip_first = false
+  local flip_second = true
+
+  if orientation == "right" then
+    flip_first = true
+    turn_offset = -16
+    flip_second = false
+  end
 
   if type == "bank" then
+    for i = 1, speed - 2 do
+      spr(81, ship.x - 4, ship.y - 4 - i * 8)
+    end
+    spr(83, ship.x - 4, ship.y - speed * 8 + 4, 1, 1, flip_first)
+    spr(83, ship.x + 4 + turn_offset, ship.y - speed * 8 + 4, 1, 1, flip_second, true)
+    spr(82, ship.x + 4 + turn_offset, ship.y - speed * 8 - 4)
   end
 
   if type == "turn" then
