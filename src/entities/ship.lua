@@ -20,7 +20,8 @@ function create_ship(owner, model)
     shield = 0,
     max_shield = 0,
     energy = 100,
-    max_energy = 100
+    max_energy = 100,
+    max_speed = 4
   }
 
   add(entities, myship)

@@ -31,7 +31,22 @@ function draw_move_menu(ship)
   if t() % 2 < 1 then
     orientation = "right"
   end
-  draw_arrow(ship, move_table[selected_move_option], 3, orientation)
+  draw_arrow(ship, move_table[selected_move_option], move_speed, orientation)
+
+  -- draw the speed
+  -- draw the menu
+  rectfill(x, y + 40, x + 50, y + 50, c)
+
+  -- draw the outline
+  rect(x, y + 40, x + 50, y + 40, outc)
+  rect(x, y + 50, x + 50, y + 50, outc)
+  rect(x, y + 40, x, y + 50, outc)
+  rect(x + 50, y + 40, x + 50, y + 50, outc)
+
+  -- draw the text
+  rectfill(x + 2, y + 43, x + 6, y + 47, 3)
+  print("speed: " .. move_speed .. "/" .. ship.max_speed, x + 8, y + 43, outc)
+  print("⬅️➡️", x + 36, y + 52, outc)
 end
 
 function draw_arrow(ship, type, speed, orientation)

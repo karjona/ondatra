@@ -47,6 +47,22 @@ function upd_battle()
           selected_move_option = 4
         end
       end
+      if btnp(➡️) and selecting_move then
+        sfx(0)
+        if move_speed >= selecting_move.max_speed then
+          move_speed = 1
+        else
+          move_speed += 1
+        end
+      end
+      if btnp(⬅️) and selecting_move then
+        sfx(0)
+        if move_speed <= 1 then
+          move_speed = selecting_move.max_speed
+        else
+          move_speed -= 1
+        end
+      end
     else
       -- card screen
       if btnp(🅾️) then
