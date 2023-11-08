@@ -26,6 +26,27 @@ function upd_battle()
           end
         end
       end
+      -- select move menu
+      if btnp(🅾️) and selecting_move then
+        sfx(0)
+        selecting_move = false
+      end
+      if btnp(⬇️) and selecting_move then
+        sfx(0)
+        if selected_move_option < 4 then
+          selected_move_option += 1
+        else
+          selected_move_option = 1
+        end
+      end
+      if btnp(⬆️) and selecting_move then
+        sfx(0)
+        if selected_move_option > 1 then
+          selected_move_option -= 1
+        else
+          selected_move_option = 4
+        end
+      end
     else
       -- card screen
       if btnp(🅾️) then
@@ -70,7 +91,6 @@ function drw_battle()
   -- draw move menu
   if selecting_move then
     draw_move_menu(selecting_move)
-    draw_arrow(selecting_move)
   end
 
   -- draw cards
@@ -116,9 +136,13 @@ function drw_battle()
 
   -- ui
   if #radio == 0 then
-    if viewing_cards == false then
+    if viewing_cards == false and not selecting_move then
       print("🅾️ cards", 91, 1, 7)
       print("❎ select", 91, 8, 7)
+    elseif selecting_move then
+      print("🅾️ cancel", 91, 1, 7)
+      print("❎ ok", 91, 8, 7)
+      print("⬆️⬇️ select", 83, 15, 7)
     else
       print("🅾️ map", 91, 1, 7)
       print("❎ play", 91, 8, 7)
