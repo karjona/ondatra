@@ -154,7 +154,7 @@ function drw_battle()
   if #radio == 0 then
     if viewing_cards == false and not selecting_move then
       print("🅾️ cards", 91, 1, 7)
-      print("❎ select", 91, 8, 7)
+      print("❎ move", 91, 8, 7)
     elseif selecting_move then
       print("🅾️ cancel", 91, 1, 7)
       print("❎ ok", 91, 8, 7)
