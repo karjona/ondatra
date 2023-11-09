@@ -13,13 +13,17 @@ function draw_move_menu(ship)
     print(move_table[i], x + 8, y + i * 8 - 8 + 4, 7)
   end
 
-  -- draw the arrow
+  -- draw the menu arrow
   if not selected_move_option then
     selected_move_option = 1
   end
-  if t() % .5 < .25 then
-    spr(84, x + 2, y + selected_move_option * 8 - 8 + 4, 1, 1)
+  if selecting_move_menu_active then
+    if t() % .5 < .25 then
+      spr(84, x + 2, y + selected_move_option * 8 - 8 + 4, 1, 1)
+    end
   end
+
+  -- draw the movement arrow
   if t() % 2 < 1 then
     orientation = "right"
   end
@@ -32,7 +36,9 @@ function draw_move_menu(ship)
   -- draw the text
   rectfill(x + 2, y + 43, x + 6, y + 47, 3)
   print("speed: " .. move_speed .. "/" .. ship.max_speed, x + 8, y + 43, 7)
-  print("⬅️➡️", x + 36, y + 52, 7)
+  if not confirming_move then
+    print("⬅️➡️", x + 36, y + 52, 7)
+  end
 end
 
 function draw_arrow(ship, type, speed, orientation)
@@ -87,5 +93,25 @@ function draw_arrow(ship, type, speed, orientation)
       spr(81, ship.x - 4, ship.y - 4 - i * 8)
     end
     spr(82, ship.x - 4, ship.y - 4 - speed * 8)
+  end
+end
+
+function draw_move_confirm()
+  local x = 39
+  local y = 54
+
+  -- draw the menu
+  rectfillout(x, y, 50, 20)
+
+  -- draw the text
+  print("confirm", x + 8, y + 4, 7)
+  print("cancel", x + 8, y + 12, 7)
+
+  -- draw the menu arrow
+  if not selected_move_confirm_option then
+    selected_move_confirm_option = 1
+  end
+  if t() % .5 < .25 then
+    spr(84, x + 2, y + selected_move_confirm_option * 8 - 8 + 4, 1, 1)
   end
 end

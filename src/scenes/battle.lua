@@ -7,6 +7,7 @@ function upd_battle()
     if btnp(❎) or btnp(🅾️) or btnp(⬇️) then
       sfx(0)
       deli(radio, 1)
+      return
     end
   else
     -- no radio messages in queue
@@ -15,6 +16,7 @@ function upd_battle()
       if btnp(🅾️) and selecting_move == false then
         sfx(0)
         viewing_cards = true
+        return
       end
       if btnp(❎) and selecting_move == false then
         for entity in all(entities) do
@@ -22,45 +24,114 @@ function upd_battle()
             if entity.type == "ship" then
               sfx(0)
               selecting_move = entity
+              selecting_move_menu_active = true
+              return
             end
           end
         end
       end
       -- select move menu
-      if btnp(🅾️) and selecting_move then
+      if btnp(🅾️) and selecting_move_menu_active then
         sfx(0)
         selecting_move = false
+        selecting_move_menu_active = false
+        selected_move_option = 1
+        move_speed = 1
+        return
       end
-      if btnp(⬇️) and selecting_move then
+      if btnp(⬇️) and selecting_move_menu_active then
         sfx(0)
         if selected_move_option < 4 then
           selected_move_option += 1
+          return
         else
           selected_move_option = 1
+          return
         end
       end
-      if btnp(⬆️) and selecting_move then
+      if btnp(⬆️) and selecting_move_menu_active then
         sfx(0)
         if selected_move_option > 1 then
           selected_move_option -= 1
+          return
         else
           selected_move_option = 4
+          return
         end
       end
-      if btnp(➡️) and selecting_move then
+      if btnp(➡️) and selecting_move_menu_active then
         sfx(0)
         if move_speed >= selecting_move.max_speed then
           move_speed = 1
+          return
         else
           move_speed += 1
+          return
         end
       end
-      if btnp(⬅️) and selecting_move then
+      if btnp(⬅️) and selecting_move_menu_active then
         sfx(0)
         if move_speed <= 1 then
           move_speed = selecting_move.max_speed
+          return
         else
           move_speed -= 1
+          return
+        end
+      end
+      if btnp(❎) and selecting_move_menu_active then
+        -- show confirm move
+        sfx(0)
+        confirming_move = true
+        selecting_move_menu_active = false
+        return
+      end
+
+      -- confirm move dialog
+      if btnp(❎) and confirming_move then
+        sfx(0)
+        if selected_move_confirm_option == 1 then
+          -- select ok in confirm mode menu
+          confirming_move = false
+          selecting_move_menu_active = false
+          selecting_move = false
+          selected_move_confirm_option = 1
+          selected_move_option = 1
+          move_speed = 1
+          return
+        else
+          -- selected cancel in confirm move menu
+          confirming_move = false
+          selecting_move_menu_active = true
+          selected_move_confirm_option = 1
+        end
+      end
+      if btnp(🅾️) and confirming_move then
+        sfx(0)
+        selecting_move_menu_active = true
+        confirming_move = false
+        selected_move_confirm_option = 1
+        return
+      end
+
+      if btnp(⬇️) and confirming_move then
+        sfx(0)
+        if selected_move_confirm_option < 2 then
+          selected_move_confirm_option += 1
+          return
+        else
+          selected_move_confirm_option = 1
+          return
+        end
+      end
+      if btnp(⬆️) and confirming_move then
+        sfx(0)
+        if selected_move_confirm_option > 1 then
+          selected_move_confirm_option -= 1
+          return
+        else
+          selected_move_confirm_option = 2
+          return
         end
       end
     else
@@ -68,14 +139,17 @@ function upd_battle()
       if btnp(🅾️) then
         sfx(0)
         viewing_cards = false
+        return
       end
 
       if btnp(⬅️) then
         sfx(0)
         if selected_card > 1 then
           selected_card = selected_card - 1
+          return
         else
           selected_card = #cards
+          return
         end
       end
 
@@ -83,8 +157,10 @@ function upd_battle()
         sfx(0)
         if selected_card < #cards then
           selected_card = selected_card + 1
+          return
         else
           selected_card = 1
+          return
         end
       end
     end
@@ -107,6 +183,10 @@ function drw_battle()
   -- draw move menu
   if selecting_move then
     draw_move_menu(selecting_move)
+  end
+
+  if confirming_move then
+    draw_move_confirm()
   end
 
   -- draw cards
