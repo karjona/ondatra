@@ -8,13 +8,7 @@ function draw_move_menu(ship)
   local orientation = "left"
 
   -- draw the menu
-  rectfill(x, y, x + 50, y + 46, c)
-
-  -- draw the outline
-  rect(x, y, x + 50, y, outc)
-  rect(x, y + 36, x + 50, y + 36, outc)
-  rect(x, y, x, y + 36, outc)
-  rect(x + 50, y, x + 50, y + 36, outc)
+  rectfillout(x, y, 50, 36, c, outc)
 
   -- draw the text
   for i = 1, #move_table do
@@ -35,13 +29,7 @@ function draw_move_menu(ship)
 
   -- draw the speed
   -- draw the menu
-  rectfill(x, y + 40, x + 50, y + 50, c)
-
-  -- draw the outline
-  rect(x, y + 40, x + 50, y + 40, outc)
-  rect(x, y + 50, x + 50, y + 50, outc)
-  rect(x, y + 40, x, y + 50, outc)
-  rect(x + 50, y + 40, x + 50, y + 50, outc)
+  rectfillout(x, y + 40, 50, 10, c, outc)
 
   -- draw the text
   rectfill(x + 2, y + 43, x + 6, y + 47, 3)

@@ -21,6 +21,7 @@ __lua__
 #include src/utilities/rspr.lua
 #include src/utilities/bg.lua
 #include src/utilities/moves.lua
+#include src/utilities/rectfillout.lua
 
 -- entities
 #include src/entities/ship.lua
