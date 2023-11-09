@@ -18,11 +18,10 @@ end
 
 function draw_card(card, x, y)
   local c = 6
-  local outc = 7
   local txtc = 5
 
   -- draw the card
-  rectfillout(x, y, cardw, cardh, c, outc)
+  rectfillout(x, y, cardw, cardh, c)
 
   -- fill with card properties
   print(card.title, x + 2, y + 2, txtc)

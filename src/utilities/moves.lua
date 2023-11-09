@@ -3,16 +3,14 @@ move_table = { "straight", "bank", "turn", "advanced" }
 function draw_move_menu(ship)
   local x = ship.x + 50
   local y = ship.y - 50
-  local c = 0
-  local outc = 7
   local orientation = "left"
 
   -- draw the menu
-  rectfillout(x, y, 50, 36, c, outc)
+  rectfillout(x, y, 50, 36)
 
   -- draw the text
   for i = 1, #move_table do
-    print(move_table[i], x + 8, y + i * 8 - 8 + 4, outc)
+    print(move_table[i], x + 8, y + i * 8 - 8 + 4, 7)
   end
 
   -- draw the arrow
@@ -29,12 +27,12 @@ function draw_move_menu(ship)
 
   -- draw the speed
   -- draw the menu
-  rectfillout(x, y + 40, 50, 10, c, outc)
+  rectfillout(x, y + 40, 50, 10)
 
   -- draw the text
   rectfill(x + 2, y + 43, x + 6, y + 47, 3)
-  print("speed: " .. move_speed .. "/" .. ship.max_speed, x + 8, y + 43, outc)
-  print("⬅️➡️", x + 36, y + 52, outc)
+  print("speed: " .. move_speed .. "/" .. ship.max_speed, x + 8, y + 43, 7)
+  print("⬅️➡️", x + 36, y + 52, 7)
 end
 
 function draw_arrow(ship, type, speed, orientation)
