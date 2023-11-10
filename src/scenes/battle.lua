@@ -81,11 +81,46 @@ function upd_battle()
           end
         end
         if btnp(❎) and selecting_move_menu_active then
-          -- show confirm move
+          if move_table[selected_move_option] == "straight" then
+            -- straight: show confirm move
+            sfx(0)
+            confirming_move = true
+            selecting_move_menu_active = false
+            return
+          elseif move_table[selected_move_option] == "bank"
+              or move_table[selected_move_option] == "turn" then
+            sfx(0)
+            confirming_orientation = true
+            move_orientation = 1
+            selecting_move_menu_active = false
+            return
+          elseif move_table[selected_move_option] == "advanced" then
+            sfx(0)
+          end
+        end
+
+        -- confirm move orientation
+        if btnp(❎) and confirming_orientation then
           sfx(0)
+          confirming_orientation = false
           confirming_move = true
-          selecting_move_menu_active = false
           return
+        end
+        if btnp(🅾️) and confirming_orientation then
+          sfx(0)
+          selecting_move_menu_active = true
+          confirming_orientation = false
+          return
+        end
+        if (btnp(⬆️) or btnp(⬇️)) and confirming_orientation then
+          sfx(0)
+          if move_orientation == 1 then
+            move_orientation = 2
+            return
+          else
+            move_orientation = 1
+            return
+          end
         end
 
         -- confirm move dialog
@@ -109,7 +144,6 @@ function upd_battle()
           selected_move_confirm_option = 1
           return
         end
-
         if btnp(⬇️) and confirming_move then
           sfx(0)
           if selected_move_confirm_option < 2 then
@@ -205,6 +239,10 @@ function drw_battle()
   -- draw move menu
   if selecting_move then
     draw_move_menu(selecting_move)
+  end
+
+  if confirming_orientation then
+    draw_move_orientation_select(selecting_move)
   end
 
   if confirming_move then

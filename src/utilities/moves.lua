@@ -1,9 +1,10 @@
 move_table = { "straight", "bank", "turn", "advanced" }
+orientation_table = { "right", "left" }
 
 function draw_move_menu(ship)
   local x = 0
   local y = 0
-  local orientation = "left"
+  if selecting_move_menu_active then move_orientation = 1 end
 
   -- decide menu position
   if ship.x <= 64 then x = 68 else x = 10 end
@@ -28,10 +29,10 @@ function draw_move_menu(ship)
   end
 
   -- draw the movement arrow
-  if t() % 2 < 1 then
-    orientation = "right"
+  if t() % 2 < 1 and selecting_move_menu_active then
+    move_orientation = 2
   end
-  draw_arrow(ship, move_table[selected_move_option], move_speed, orientation)
+  draw_arrow(ship, move_table[selected_move_option], move_speed)
 
   -- draw the speed
   -- draw the menu
@@ -40,12 +41,12 @@ function draw_move_menu(ship)
   -- draw the text
   rectfill(x + 2, y + 43, x + 6, y + 47, 3)
   print("speed: " .. move_speed .. "/" .. ship.max_speed, x + 8, y + 43, 7)
-  if not confirming_move then
+  if selecting_move_menu_active then
     print("⬅️➡️", x + 36, y + 52, 7)
   end
 end
 
-function draw_arrow(ship, type, speed, orientation)
+function draw_arrow(ship, type, speed)
   local x = ship.x + 50
   local y = ship.y - 50
   local turn_offset = 0
@@ -54,7 +55,7 @@ function draw_arrow(ship, type, speed, orientation)
     local flip_first = false
     local flip_second = true
 
-    if orientation == "right" then
+    if move_orientation == 2 then
       flip_first = true
       turn_offset = -16
       flip_second = false
@@ -73,39 +74,40 @@ function draw_arrow(ship, type, speed, orientation)
     end
 
     move_target_arrow_pos = { y = ship.y - speed * 8 }
-    if orientation == "right" then
-      move_target_arrow_pos.x = ship.x + 8
-      move_target_arrow_pos.angle = ship.angle + 45
-    else
+    if move_orientation == 2 then
       move_target_arrow_pos.x = ship.x - 8
       move_target_arrow_pos.angle = ship.angle - 45
+    else
+      move_target_arrow_pos.x = ship.x + 8
+      move_target_arrow_pos.angle = ship.angle + 45
     end
   end
 
   if type == "turn" then
+    local arrow_angle = 0
     for i = 1, speed - 1 do
       spr(81, ship.x - 4, ship.y - 4 - i * 8)
     end
-    if orientation == "left" then
+    if move_orientation == 1 then
       angle = 90 / 360
       turn_offset = 8
     else
       angle = 270 / 360
       turn_offset = -8
     end
-    if orientation == "left" then
+    if move_orientation == 1 then
       spr(83, ship.x - 4, ship.y - 4 - speed * 8, 1, 1)
     else
       spr(83, ship.x - 4, ship.y - 4 - speed * 8, 1, 1, true)
     end
     rspr(ship.x + turn_offset, ship.y - speed * 8, angle, 2.5, .5, 1.4, false, 1)
     move_target_arrow_pos = { y = ship.y - speed * 8 }
-    if orientation == "right" then
-      move_target_arrow_pos.x = ship.x + 8
-      move_target_arrow_pos.angle = ship.angle + 90
-    else
+    if move_orientation == 2 then
       move_target_arrow_pos.x = ship.x - 8
       move_target_arrow_pos.angle = ship.angle - 90
+    else
+      move_target_arrow_pos.x = ship.x + 8
+      move_target_arrow_pos.angle = ship.angle + 90
     end
   end
 
@@ -135,6 +137,27 @@ function draw_move_confirm()
   end
   if t() % .5 < .25 then
     spr(84, x + 2, y + selected_move_confirm_option * 8 - 8 + 4, 1, 1)
+  end
+end
+
+function draw_move_orientation_select(ship)
+  if ship.x <= 64 then x = 68 + 20 else x = 10 + 20 end
+  if ship.y <= 64 then y = 58 + 24 else y = 30 + 24 end
+
+  -- draw the menu
+  rectfillout(x, y, 36, 20)
+
+  -- draw the text
+  for i = 1, #orientation_table do
+    print(orientation_table[i], x + 8, y + i * 8 - 8 + 4, 7)
+  end
+
+  -- draw the menu arrow
+  if not move_orientation then
+    move_orientation = 1
+  end
+  if t() % .5 < .25 then
+    spr(84, x + 2, y + move_orientation * 8 - 8 + 4, 1, 1)
   end
 end
 

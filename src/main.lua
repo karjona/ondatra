@@ -30,6 +30,7 @@ function start_game()
   selected_move_option = 1
   selecting_move_menu_active = false
   confirming_move = false
+  confirming_orientation = false
   selected_move_confirm_option = 1
   move_speed = 1
   moving_ships = false
