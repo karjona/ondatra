@@ -12,7 +12,7 @@ function create_ship(owner, model)
     type = "ship",
     model = model,
     selected = true,
-    x = 15,
+    x = 16,
     y = 80,
     angle = 0,
     move_x = nil,
