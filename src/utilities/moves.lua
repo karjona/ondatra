@@ -1,9 +1,13 @@
 move_table = { "straight", "bank", "turn", "advanced" }
 
 function draw_move_menu(ship)
-  local x = ship.x + 50
-  local y = ship.y - 50
+  local x = 0
+  local y = 0
   local orientation = "left"
+
+  -- decide menu position
+  if ship.x <= 64 then x = 68 else x = 10 end
+  if ship.y <= 64 then y = 58 else y = 30 end
 
   -- draw the menu
   rectfillout(x, y, 50, 36)
