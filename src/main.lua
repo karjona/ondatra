@@ -32,6 +32,8 @@ function start_game()
   confirming_move = false
   selected_move_confirm_option = 1
   move_speed = 1
+  moving_ships = false
+  move_target_arrow_pos = { x = nil, y = nil, angle = nil }
 
   entities = {}
 
