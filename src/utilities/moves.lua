@@ -120,17 +120,25 @@ function draw_arrow(ship, type, speed)
       x_offset = 8
       y_offset = 8
       scale = 1.5
+    elseif angle == 135 then
+      x_offset = 8
+      y_offset = -8
+      scale = 1.5
+    elseif angle == 225 then
+      x_offset = -8
+      y_offset = -8
+      scale = 1.5
     elseif angle == 315 then
       x_offset = -8
       y_offset = 8
       scale = 1.5
     elseif angle == 90 then
       x_offset = 8
-    elseif ship.angle == 270 then
+    elseif angle == 270 then
       x_offset = -8
-    elseif ship.angle == 180 then
+    elseif angle == 180 then
       y_offset = -8
-    elseif ship.angle == 0 then
+    elseif angle == 0 then
       y_offset = 8
     end
 
