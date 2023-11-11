@@ -112,11 +112,33 @@ function draw_arrow(ship, type, speed)
   end
 
   if type == "straight" then
-    for i = 1, speed - 1 do
-      spr(81, ship.x - 4, ship.y - 4 - i * 8)
+    local x_offset = 0
+    local y_offset = 0
+    local angle = ship.angle % 360
+    local scale = 1
+    if angle == 45 then
+      x_offset = 8
+      y_offset = 8
+      scale = 1.5
+    elseif angle == 315 then
+      x_offset = -8
+      y_offset = 8
+      scale = 1.5
+    elseif angle == 90 then
+      x_offset = 8
+    elseif ship.angle == 270 then
+      x_offset = -8
+    elseif ship.angle == 180 then
+      y_offset = -8
+    elseif ship.angle == 0 then
+      y_offset = 8
     end
-    spr(82, ship.x - 4, ship.y - 4 - speed * 8)
-    move_target_arrow_pos = { x = ship.x, y = ship.y - speed * 8, angle = ship.angle }
+
+    for i = 1, speed - 1 do
+      rspr(ship.x + x_offset * i, ship.y - i * y_offset, ship.angle / 360, 4.5, .5, 1, false, scale)
+    end
+    rspr(ship.x + x_offset * speed, ship.y - speed * y_offset, ship.angle / 360, 2.5, .5, 1, false, scale)
+    move_target_arrow_pos = { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle }
   end
 end
 
