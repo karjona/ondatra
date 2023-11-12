@@ -2,37 +2,20 @@ move_table = { "straight", "bank", "turn", "advanced" }
 orientation_table = { "right", "left" }
 
 function calculateOffsets(ship)
-  local x_offset = 0
-  local y_offset = 0
   local angle = ship.angle % 360
 
-  if angle == 45 then
-    x_offset = 8
-    y_offset = 8
-    scale = 1.5
-  elseif angle == 135 then
-    x_offset = 8
-    y_offset = -8
-    scale = 1.5
-  elseif angle == 225 then
-    x_offset = -8
-    y_offset = -8
-    scale = 1.5
-  elseif angle == 315 then
-    x_offset = -8
-    y_offset = 8
-    scale = 1.5
-  elseif angle == 90 then
-    x_offset = 8
-  elseif angle == 270 then
-    x_offset = -8
-  elseif angle == 180 then
-    y_offset = -8
-  elseif angle == 0 then
-    y_offset = 8
-  end
+  local offsetTable = {
+    [0] = { y_offset = 8 },
+    [45] = { x_offset = 8, y_offset = 8, scale = 1.5 },
+    [90] = { x_offset = 8 },
+    [135] = { x_offset = 8, y_offset = -8, scale = 1.5 },
+    [180] = { y_offset = -8 },
+    [225] = { x_offset = -8, y_offset = -8, scale = 1.5 },
+    [270] = { x_offset = -8 },
+    [315] = { x_offset = -8, y_offset = 8, scale = 1.5 }
+  }
 
-  return x_offset, y_offset, scale
+  return offsetTable[angle] or {}
 end
 
 function draw_move_menu(ship)
@@ -81,7 +64,8 @@ function draw_move_menu(ship)
 end
 
 function draw_arrow(ship, type, speed)
-  local x_offset, y_offset, scale = calculateOffsets(ship)
+  local offsets = calculateOffsets(ship)
+  x_offset, y_offset, scale = offsets.x_offset or 0, offsets.y_offset or 0, offsets.scale or 1
 
   if type == "bank" then
     local spr_mapy = .5
