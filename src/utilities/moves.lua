@@ -81,11 +81,14 @@ function draw_move_menu(ship)
 end
 
 function draw_arrow(ship, type, speed)
-  local x = ship.x + 50
-  local y = ship.y - 50
-  local turn_offset = 0
+  local x_offset, y_offset, scale = calculateOffsets(ship)
 
   if type == "bank" then
+    local spr_mapy = .5
+    local arrow_x_offset = 0
+    local arrow_y_offset = 0
+
+    --[[
     local flip_first = false
     local flip_second = true
 
@@ -95,6 +98,7 @@ function draw_arrow(ship, type, speed)
       flip_second = false
     end
 
+
     if speed >= 2 then
       for i = 1, speed - 2 do
         spr(81, ship.x - 4, ship.y - 4 - i * 8)
@@ -102,9 +106,30 @@ function draw_arrow(ship, type, speed)
       spr(83, ship.x - 4, ship.y - speed * 8 + 4, 1, 1, flip_first)
       spr(83, ship.x + 4 + turn_offset, ship.y - speed * 8 + 4, 1, 1, flip_second, true)
       spr(82, ship.x + 4 + turn_offset, ship.y - speed * 8 - 4)
-    else
-      spr(83, ship.x + 4 + turn_offset, ship.y - speed * 8 + 4, 1, 1, flip_second, true)
-      spr(82, ship.x + 4 + turn_offset, ship.y - speed * 8 - 4)
+    end
+    --]]
+
+    if speed == 1 then
+      local arrow_angle = (360 - ship.angle + 270) % 360
+      if move_orientation == 2 then
+        spr_mapy = 3.5
+      end
+
+      -- lets calc the arrow offsets
+      local angleOffsets = {
+        [0] = { [1] = { 7, 0 }, [2] = { -10, 0 } },
+        [45] = { [1] = { 5, 7 }, [2] = { -7, -5 } },
+        [90] = { [1] = { 0, 7 }, [2] = { 0, -10 } },
+        [135] = { [1] = { -5, 7 }, [2] = { 7, -5 } },
+        [180] = { [1] = { -7, 0 }, [2] = { 10, 0 } },
+        [225] = { [1] = { -5, -7 }, [2] = { 7, 5 } },
+        [270] = { [1] = { 0, -7 }, [2] = { 0, 10 } },
+        [315] = { [1] = { 5, -7 }, [2] = { -7, 5 } }
+      }
+      arrow_x_offset, arrow_y_offset = unpack(angleOffsets[ship.angle % 360][move_orientation] or { 0, 0 })
+
+      -- draw the arrow
+      rspr(ship.x + arrow_x_offset, ship.y + arrow_y_offset, arrow_angle / 360, 9.5, spr_mapy, 3, true, 1)
     end
 
     move_target_arrow_pos = { y = ship.y - speed * 8 }
@@ -118,18 +143,13 @@ function draw_arrow(ship, type, speed)
   end
 
   if type == "turn" then
-    local x_offset, y_offset, scale, turn_offset = calculateOffsets(ship)
-    local arrow_angle = 0
-
     for i = 1, speed - 1 do
       rspr(ship.x + x_offset * i, ship.y - i * y_offset, ship.angle / 360, 4.5, .5, 1, false, scale)
     end
     if move_orientation == 1 then
       angle = ship.angle / 360
-      arrow_angle = (ship.angle + 90) / 360
     else
       angle = -ship.angle / 360
-      arrow_angle = (ship.angle - 90) / 360
     end
 
     if move_orientation == 1 then
@@ -149,8 +169,6 @@ function draw_arrow(ship, type, speed)
   end
 
   if type == "straight" then
-    local x_offset, y_offset, scale = calculateOffsets(ship)
-
     for i = 1, speed - 1 do
       rspr(ship.x + x_offset * i, ship.y - i * y_offset, ship.angle / 360, 4.5, .5, 1, false, scale)
     end
