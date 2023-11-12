@@ -124,7 +124,7 @@ function draw_arrow(ship, type, speed)
       rspr(ship.x + x_offset * speed + arrow_x_offset, ship.y - speed * y_offset + arrow_y_offset, arrow_angle / 360, spr_mapx, spr_mapy, 3.5, true, 1)
     end
 
-    move_target_arrow_pos = { x = ship.x + arrow_x_offset, y = ship.y + arrow_y_offset }
+    move_target_arrow_pos = { x = ship.x + x_offset * speed + arrow_x_offset, y = ship.y - speed * y_offset + arrow_y_offset }
     if move_orientation == 2 then
       move_target_arrow_pos.angle = ship.angle - 45
     else
