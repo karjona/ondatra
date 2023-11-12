@@ -14,7 +14,7 @@ function create_ship(owner, model)
     selected = true,
     x = 32,
     y = 64,
-    angle = 315,
+    angle = 0,
     move_x = nil,
     move_y = nil,
     move_angle = nil,
