@@ -26,6 +26,8 @@ function start_game()
 
   cards = {}
   viewing_cards = false
+
+  battle_phase = "movement"
   selecting_move = false
   selected_move_option = 1
   selecting_move_menu_active = false
@@ -52,6 +54,7 @@ function start_game()
 
   -- debug entities
   create_ship()
+  create_ship("cpu", "creature")
 
   _upd = upd_battle
   _drw = drw_battle

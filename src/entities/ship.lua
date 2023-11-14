@@ -1,19 +1,32 @@
 function create_ship(owner, model)
+  local x = 0
+  local y = 0
+  local selected = false
+
   if owner == nil then
     owner = "player"
   end
 
   if model == nil then
     model = "fighter"
+    x = 32
+    y = 64
+    selected = true
+  end
+
+  if model == "creature" then
+    x = rnd(128)
+    y = rnd(20) + 8
   end
 
   local myship = {
     owner = owner,
     type = "ship",
     model = model,
-    selected = true,
-    x = 32,
-    y = 64,
+    selected = selected,
+    has_moved = false,
+    x = x,
+    y = y,
     angle = 0,
     move_x = nil,
     move_y = nil,
@@ -36,15 +49,25 @@ end
 function draw_ship(ship)
   local x = ship.x
   local y = ship.y
+  local spr_x = 0
+  local spr_y = 0
   local angle = ship.angle / 360
   local model = ship.model
 
   if model == "fighter" then
+    spr_x = .5
+    spr_y = .5
     if t() % 5 >= 2 then
       y -= 1
     end
+  elseif model == "creature" then
+    spr_x = .5
+    spr_y = 7.5
+  end
 
-    rspr(x, y, angle, 0.5, 0.5, 1, false, 1)
+  rspr(x, y, angle, spr_x, spr_y, 1, false, 1)
+  if ship.has_moved then
+    print("m", x + 2, y + 2, 9)
   end
 end
 

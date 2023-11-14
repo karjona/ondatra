@@ -3,6 +3,16 @@ function upd_battle()
     selected_card = 1
   end
 
+  battle_phase = "shoot"
+  for entity in all(entities) do
+    if entity.type == "ship" and entity.owner == "player" then
+      if entity.has_moved == false then
+        battle_phase = "movement"
+        break
+      end
+    end
+  end
+
   if #radio > 0 then
     if btnp(❎) or btnp(🅾️) or btnp(⬇️) then
       sfx(0)
@@ -200,6 +210,7 @@ end
 
 function drw_battle()
   local ship_moved = false
+  local selected_ship = nil
   draw_bg(level)
 
   -- draw and animate ships
@@ -208,6 +219,7 @@ function drw_battle()
       draw_ship(entity)
       if entity.selected and not moving_ships then
         draw_selsquare(entity)
+        selected_ship = entity
       end
       if moving_ships and entity.dx != 0 then
         ship_moved = true
@@ -234,6 +246,10 @@ function drw_battle()
         end
       end
     end
+  end
+
+  if battle_phase == "shoot" then
+    -- draw shoot menu
   end
 
   -- draw move menu
@@ -295,7 +311,11 @@ function drw_battle()
     if not moving_ships then
       if viewing_cards == false and not selecting_move then
         print("🅾️ cards", 91, 1, 7)
-        print("❎ move", 91, 8, 7)
+        if battle_phase == "movement" then
+          print("❎ move", 91, 8, 7)
+        elseif battle_phase == "shoot" then
+          print("❎ shoot", 91, 8, 7)
+        end
       elseif selecting_move then
         print("🅾️ cancel", 91, 1, 7)
         print("❎ ok", 91, 8, 7)
