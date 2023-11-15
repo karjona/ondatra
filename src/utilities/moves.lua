@@ -232,6 +232,8 @@ function move_ship()
     ship.dangle = -1.5
   end
 
+  ship.has_moved = true
+
   -- reset variables
   confirming_move = false
   selecting_move_menu_active = false
