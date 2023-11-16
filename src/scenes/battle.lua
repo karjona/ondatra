@@ -11,6 +11,13 @@ function upd_battle()
         break
       end
     end
+
+    if entity.type == "ship" and entity.owner != "player" then
+      local x1, y1, x2, y2 = calc_range_vertices(entities[1])
+      if is_enemy_in_range(entity.x, entity.y, entities[1].x, entities[1].y, x1, y1, x2, y2) then
+        entity.selected = true
+      end
+    end
   end
 
   if #radio > 0 then

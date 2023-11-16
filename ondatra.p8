@@ -22,6 +22,7 @@ __lua__
 #include src/utilities/bg.lua
 #include src/utilities/moves.lua
 #include src/utilities/rectfillout.lua
+#include src/utilities/shots.lua
 
 -- entities
 #include src/entities/ship.lua

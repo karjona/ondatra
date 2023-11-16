@@ -15,7 +15,7 @@ function create_ship(owner, model)
   end
 
   if model == "creature" then
-    x = rnd(128)
+    x = rnd(128) + 8
     y = rnd(20) + 8
   end
 
@@ -66,8 +66,12 @@ function draw_ship(ship)
   end
 
   rspr(x, y, angle, spr_x, spr_y, 1, false, 1)
-  if ship.has_moved then
-    print("m", x + 2, y + 2, 9)
+  if ship.has_moved and ship.owner == "player" then
+    if battle_phase == "shoot" and not moving_ships then
+      local x1, y1, x2, y2 = calc_range_vertices(ship)
+      line(x, y, x1, y1, 8)
+      line(x, y, x2, y2, 8)
+    end
   end
 end
 
