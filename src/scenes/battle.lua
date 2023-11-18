@@ -130,7 +130,6 @@ function drw_battle()
     end
 
     if entity.type == "bullet" then
-      print(entity.x, 1, 1, 7)
       draw_bullet(entity)
     end
   end

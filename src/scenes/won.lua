@@ -1,9 +1,10 @@
 function upd_won()
+  if btnp(❎) then
+    start_game()
+  end
 end
 
 function drw_won()
   cls()
-  cursor(1, 1)
-  color(8)
-  print("you won. thank you for playing!")
+  print("you won. thank you for playing!", 1, 1, 8)
 end
