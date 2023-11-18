@@ -121,8 +121,3 @@ function select_ship()
     end
   end
 end
-
-function shoot_ship(from, to)
-  from.has_shot = true
-  to.health = 0
-end

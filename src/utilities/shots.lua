@@ -30,3 +30,8 @@ function calc_range_vertices(ship, range)
 
   return x1, y1, x2, y2
 end
+
+function shoot_ship(from, to)
+  create_bullet(from, to)
+  from.has_shot = true
+end

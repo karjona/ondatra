@@ -8,7 +8,28 @@ function upd_battle()
 
   local ship_moved = false
   local enemies_left = 0
+  local bullet_count = 0
   for entity in all(entities) do
+    if entity.type == "bullet" then
+      bullet_count += 1
+      if entity.x < entity.tx then
+        entity.x += 1
+      elseif entity.x > entity.tx then
+        entity.x -= 1
+      end
+
+      if entity.y < entity.ty then
+        entity.y += 1
+      elseif entity.y > entity.ty then
+        entity.y -= 1
+      end
+
+      if entity.x == entity.tx and entity.y == entity.ty then
+        del(entities, entity)
+        entity.target.health = 0
+      end
+    end
+
     if entity.type == "ship" then
       -- destroy ship if health is 0
       if entity.health <= 0 then
@@ -42,7 +63,7 @@ function upd_battle()
     end
   end
 
-  if enemies_left == 0 then
+  if enemies_left == 0 and bullet_count == 0 then
     _drw = drw_won
     _upd = upd_won
   end
@@ -50,7 +71,7 @@ function upd_battle()
   if ship_moved then moving_ships = true else moving_ships = false end
 
   -- select the active ship
-  select_ship()
+  if bullet_count == 0 then select_ship() end
   if not selected_ship then
     reset_turn()
     return
@@ -99,13 +120,18 @@ end
 function drw_battle()
   draw_bg(level)
 
-  -- draw ships
+  -- draw entities
   for entity in all(entities) do
     if entity.type == "ship" then
       draw_ship(entity)
       if entity == shot_target and not moving_ships then
         draw_shottarget(entity)
       end
+    end
+
+    if entity.type == "bullet" then
+      print(entity.x, 1, 1, 7)
+      draw_bullet(entity)
     end
   end
   if selected_ship and not moving_ships then draw_selsquare(selected_ship) end

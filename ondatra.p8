@@ -30,6 +30,7 @@ __lua__
 -- entities
 #include src/entities/ship.lua
 #include src/entities/enemy.lua
+#include src/entities/bullet.lua
 
 -- levels
 #include src/levels/1.lua
