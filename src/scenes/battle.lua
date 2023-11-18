@@ -7,8 +7,13 @@ function upd_battle()
 
   local ship_moved = false
   for entity in all(entities) do
-    -- animate ship movement
     if entity.type == "ship" then
+      -- destroy ship if health is 0
+      if entity.health <= 0 then
+        del(entities, entity)
+      end
+
+      -- animate ship movement
       if animate_ship(entity) then
         ship_moved = true
       end

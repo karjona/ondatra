@@ -66,11 +66,18 @@ function battle_button_x()
     end
   end
 
-  if battle_phase == "shoot"
-      and not selecting_target then
-    sfx(0)
-    selecting_target = selected_ship
-    return
+  if battle_phase == "shoot" then
+    if not selecting_target then
+      sfx(0)
+      selecting_target = selected_ship
+      return
+    else
+      if shot_target then
+        shoot_ship(selecting_target, shot_target)
+        selecting_target = nil
+        shot_target = nil
+      end
+    end
   end
 end
 

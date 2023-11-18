@@ -15,7 +15,7 @@ function create_ship(owner, model)
   end
 
   if model == "creature" then
-    x = rnd(128) + 8
+    x = rnd(64) + 8
     y = rnd(20) + 8
     initiative = 20
   end
@@ -120,4 +120,9 @@ function select_ship()
       end
     end
   end
+end
+
+function shoot_ship(from, to)
+  from.has_shot = true
+  to.health = 0
 end
