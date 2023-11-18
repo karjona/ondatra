@@ -6,11 +6,16 @@ function upd_battle()
   battle_phase = "shoot"
 
   local ship_moved = false
+  local enemies_left = 0
   for entity in all(entities) do
     if entity.type == "ship" then
       -- destroy ship if health is 0
       if entity.health <= 0 then
         del(entities, entity)
+      end
+
+      if entity.owner == "cpu" then
+        enemies_left += 1
       end
 
       -- animate ship movement
@@ -36,6 +41,12 @@ function upd_battle()
       end
     end
   end
+
+  if enemies_left == 0 then
+    _drw = drw_won
+    _upd = upd_won
+  end
+
   if ship_moved then moving_ships = true else moving_ships = false end
 
   -- select the active ship
