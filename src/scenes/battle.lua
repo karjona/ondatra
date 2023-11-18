@@ -5,6 +5,9 @@ function upd_battle()
   -- if there's a ship yet to move, we set it to movement later
   selected_ship = nil
   battle_phase = "shoot"
+  if #cards < 2 then
+    create_card()
+  end
 
   local ship_moved = false
   local enemies_left = 0

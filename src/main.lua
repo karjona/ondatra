@@ -25,6 +25,7 @@ function start_game()
   radio = {}
 
   cards = {}
+  card_pool = {}
   viewing_cards = false
   selected_card = 1
 
@@ -44,12 +45,8 @@ function start_game()
 
   entities = {}
 
-  -- debug cards
-  create_card("my card")
-  create_card("two cards")
-  create_card("three")
-  --create_card("four")
-  --create_card("five")
+  -- initialize card pool
+  init_cards()
 
   -- debug radio messages
   say("a.", "hello! this is a test radio message!", true)
