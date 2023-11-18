@@ -60,3 +60,8 @@ function print_radio()
     end
   end
 end
+
+function del_msg()
+  sfx(0)
+  deli(radio, 1)
+end

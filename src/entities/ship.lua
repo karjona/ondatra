@@ -1,7 +1,8 @@
 function create_ship(owner, model)
   local x = 0
   local y = 0
-  local selected = false
+  local initiative = 40
+  local has_moved = false
 
   if owner == nil then
     owner = "player"
@@ -11,21 +12,22 @@ function create_ship(owner, model)
     model = "fighter"
     x = 32
     y = 64
-    selected = true
+    initiative = 20
   end
 
   if model == "creature" then
     x = rnd(128) + 8
     y = rnd(20) + 8
+    has_moved = true
   end
 
   local myship = {
     owner = owner,
     type = "ship",
     model = model,
-    selected = selected,
+    initiative = initiative,
     shot_target = false,
-    has_moved = false,
+    has_moved = has_moved,
     has_shot = false,
     x = x,
     y = y,
@@ -100,4 +102,25 @@ function draw_shottarget(ship)
   local sprite = frame == 3 and 90 or 89 + frame
 
   spr(sprite, x - 4, y - 10)
+end
+
+function select_ship()
+  local highest_initiative = 0
+  for entity in all(entities) do
+    if battle_phase == "movement" then
+      if entity.type == "ship" and entity.has_moved == false then
+        if entity.initiative > highest_initiative then
+          highest_initiative = entity.initiative
+          selected_ship = entity
+        end
+      end
+    elseif battle_phase == "shoot" then
+      if entity.type == "ship" and entity.has_shot == false then
+        if entity.initiative > highest_initiative then
+          highest_initiative = entity.initiative
+          selected_ship = entity
+        end
+      end
+    end
+  end
 end

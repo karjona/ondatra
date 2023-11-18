@@ -23,6 +23,8 @@ __lua__
 #include src/utilities/moves.lua
 #include src/utilities/rectfillout.lua
 #include src/utilities/shots.lua
+#include src/utilities/menus.lua
+#include src/utilities/buttons.lua
 
 -- entities
 #include src/entities/ship.lua
