@@ -3,6 +3,7 @@ function upd_battle()
 
   -- we set the default battle phase to shoot
   -- if there's a ship yet to move, we set it to movement later
+  selected_ship = nil
   battle_phase = "shoot"
 
   local ship_moved = false
@@ -33,7 +34,6 @@ function upd_battle()
           if entity.owner != "player" then
             local x1, y1, x2, y2 = calc_range_vertices(selecting_target)
             if is_enemy_in_range(entity.x, entity.y, selecting_target.x, selecting_target.y, x1, y1, x2, y2) then
-              --entity.shot_target = true
               shot_target = entity
             end
           end
@@ -51,11 +51,19 @@ function upd_battle()
 
   -- select the active ship
   select_ship()
+  if not selected_ship then
+    reset_turn()
+    return
+  end
 
   -- enemy behaviour
   if selected_ship.owner != "player" then
     if battle_phase == "movement" then
       move_enemy(selected_ship)
+    end
+
+    if battle_phase == "shoot" then
+      shoot_enemy(selected_ship)
     end
   end
 
@@ -100,7 +108,7 @@ function drw_battle()
       end
     end
   end
-  if selected_ship then draw_selsquare(selected_ship) end
+  if selected_ship and not moving_ships then draw_selsquare(selected_ship) end
 
   if battle_phase == "shoot" then
     -- draw shoot menu
@@ -175,31 +183,46 @@ function drw_battle()
 
   -- ui
   if #radio == 0 then
-    if not moving_ships then
-      if viewing_cards == false
-          and not selecting_move
-          and not selecting_target then
-        print("🅾️ cards", 91, 1, 7)
-        if battle_phase == "movement" then
-          print("❎ move", 91, 8, 7)
-        elseif battle_phase == "shoot" then
-          if not shot_target then
-            print("❎ shoot", 91, 8, 7)
+    if selected_ship and selected_ship.owner == "player" then
+      if not moving_ships then
+        if viewing_cards == false
+            and not selecting_move
+            and not selecting_target then
+          print("🅾️ cards", 91, 1, 7)
+          if battle_phase == "movement" then
+            print("❎ move", 91, 8, 7)
+          elseif battle_phase == "shoot" then
+            if not shot_target then
+              print("❎ shoot", 91, 8, 7)
+            end
           end
+        elseif selecting_move then
+          print("🅾️ cancel", 91, 1, 7)
+          print("❎ ok", 91, 8, 7)
+          print("⬆️⬇️ select", 83, 15, 7)
+        elseif selecting_target then
+          print("🅾️ cancel", 91, 1, 7)
+          print("⬅️➡️ select", 83, 15, 7)
+          if shot_target then
+            print("❎ fire!", 91, 8, 8)
+          else
+            print("❎ pass", 91, 8, 7)
+          end
+        else
+          print("🅾️ map", 91, 1, 7)
+          print("❎ play", 91, 8, 7)
+          print("⬅️➡️ select", 83, 15, 7)
         end
-      elseif selecting_move then
-        print("🅾️ cancel", 91, 1, 7)
-        print("❎ ok", 91, 8, 7)
-        print("⬆️⬇️ select", 83, 15, 7)
-      elseif selecting_target then
-        print("🅾️ cancel", 91, 1, 7)
-        print("❎ fire!", 91, 8, 8)
-        print("⬅️➡️ select", 83, 15, 7)
-      else
-        print("🅾️ map", 91, 1, 7)
-        print("❎ play", 91, 8, 7)
-        print("⬅️➡️ select", 83, 15, 7)
       end
+    end
+  end
+end
+
+function reset_turn()
+  for entity in all(entities) do
+    if entity.type == "ship" then
+      entity.has_moved = false
+      entity.has_shot = false
     end
   end
 end
