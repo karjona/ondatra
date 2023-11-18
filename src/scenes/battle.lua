@@ -15,7 +15,7 @@ function upd_battle()
     if entity.type == "ship" and entity.owner != "player" then
       local x1, y1, x2, y2 = calc_range_vertices(entities[1])
       if is_enemy_in_range(entity.x, entity.y, entities[1].x, entities[1].y, x1, y1, x2, y2) then
-        entity.selected = true
+        entity.shot_target = true
       end
     end
   end
@@ -227,6 +227,9 @@ function drw_battle()
       if entity.selected and not moving_ships then
         draw_selsquare(entity)
         selected_ship = entity
+      end
+      if entity.shot_target and not moving_ships then
+        draw_shottarget(entity)
       end
       if moving_ships and entity.dx != 0 then
         ship_moved = true

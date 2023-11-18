@@ -24,7 +24,9 @@ function create_ship(owner, model)
     type = "ship",
     model = model,
     selected = selected,
+    shot_target = false,
     has_moved = false,
+    has_shot = false,
     x = x,
     y = y,
     angle = 0,
@@ -88,4 +90,20 @@ function draw_selsquare(ship)
   spr(80, x - 5, y - 3, 1, 1, false, true)
   spr(80, x - 3, y - 3, 1, 1, true, true)
   pal()
+end
+
+function draw_shottarget(ship)
+  local x = ship.x
+  local y = ship.y
+
+  -- calculate the current frame based on the time
+  -- frames are 89, 90, 91
+  -- when we reach frame 91, we should go back to 90 and then 89 and restart again
+  local frame = flr(t() / 0.15) % 5
+
+  -- use the frame to determine the sprite
+  local arrowspr = 89 + frame
+
+  -- draw the sprite above the ship
+  spr(arrowspr, x - 3, y - 10)
 end
