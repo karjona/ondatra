@@ -25,7 +25,6 @@ function create_ship(owner, model)
     type = "ship",
     model = model,
     initiative = initiative,
-    shot_target = false,
     has_moved = has_moved,
     has_shot = false,
     x = x,
@@ -73,8 +72,8 @@ end
 
 function draw_rangelines(ship)
   local x1, y1, x2, y2 = calc_range_vertices(ship)
-  line(x, y, x1, y1, 8)
-  line(x, y, x2, y2, 8)
+  line(ship.x, ship.y, x1, y1, 8)
+  line(ship.x, ship.y, x2, y2, 8)
 end
 
 function draw_selsquare(ship)

@@ -65,6 +65,13 @@ function battle_button_x()
       end
     end
   end
+
+  if battle_phase == "shoot"
+      and not selecting_target then
+    sfx(0)
+    selecting_target = selected_ship
+    return
+  end
 end
 
 function battle_button_o()
@@ -74,7 +81,7 @@ function battle_button_o()
   end
 
   -- open and close the card viewer when not doing any other actions
-  if not selecting_move then
+  if not selecting_move and not selecting_target then
     if not viewing_cards then
       sfx(0)
       viewing_cards = true
@@ -117,6 +124,13 @@ function battle_button_o()
       selected_move_confirm_option = 1
       return
     end
+  end
+
+  if battle_phase == "shoot" then
+    sfx(0)
+    selecting_target = nil
+    shot_target = nil
+    return
   end
 end
 

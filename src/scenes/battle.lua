@@ -19,10 +19,13 @@ function upd_battle()
       end
 
       if battle_phase == "shoot" then
-        if entity.owner != "player" then
-          local x1, y1, x2, y2 = calc_range_vertices(entities[1])
-          if is_enemy_in_range(entity.x, entity.y, entities[1].x, entities[1].y, x1, y1, x2, y2) then
-            entity.shot_target = true
+        if selecting_target and not shot_target then
+          if entity.owner != "player" then
+            local x1, y1, x2, y2 = calc_range_vertices(selecting_target)
+            if is_enemy_in_range(entity.x, entity.y, selecting_target.x, selecting_target.y, x1, y1, x2, y2) then
+              --entity.shot_target = true
+              shot_target = entity
+            end
           end
         end
       end
@@ -33,6 +36,7 @@ function upd_battle()
   -- select the active ship
   select_ship()
 
+  -- enemy behaviour
   if selected_ship.owner != "player" then
     if battle_phase == "movement" then
       move_enemy(selected_ship)
@@ -70,13 +74,12 @@ end
 
 function drw_battle()
   draw_bg(level)
-  print(battle_phase, 1, 1, 7)
 
   -- draw ships
   for entity in all(entities) do
     if entity.type == "ship" then
       draw_ship(entity)
-      if entity.shot_target and not moving_ships then
+      if entity == shot_target and not moving_ships then
         draw_shottarget(entity)
       end
     end
@@ -99,6 +102,17 @@ function drw_battle()
 
     if confirming_move then
       draw_move_confirm()
+    end
+  end
+
+  -- draw shoot phase
+  if battle_phase == "shoot" then
+    if selecting_target then
+      draw_rangelines(selecting_target)
+    end
+
+    if shot_target then
+      print("90%", shot_target.x + 6, shot_target.y - 6, 7)
     end
   end
 
@@ -146,17 +160,25 @@ function drw_battle()
   -- ui
   if #radio == 0 then
     if not moving_ships then
-      if viewing_cards == false and not selecting_move then
+      if viewing_cards == false
+          and not selecting_move
+          and not selecting_target then
         print("🅾️ cards", 91, 1, 7)
         if battle_phase == "movement" then
           print("❎ move", 91, 8, 7)
         elseif battle_phase == "shoot" then
-          print("❎ shoot", 91, 8, 7)
+          if not shot_target then
+            print("❎ shoot", 91, 8, 7)
+          end
         end
       elseif selecting_move then
         print("🅾️ cancel", 91, 1, 7)
         print("❎ ok", 91, 8, 7)
         print("⬆️⬇️ select", 83, 15, 7)
+      elseif selecting_target then
+        print("🅾️ cancel", 91, 1, 7)
+        print("❎ fire!", 91, 8, 8)
+        print("⬅️➡️ select", 83, 15, 7)
       else
         print("🅾️ map", 91, 1, 7)
         print("❎ play", 91, 8, 7)

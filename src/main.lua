@@ -39,6 +39,9 @@ function start_game()
   moving_ships = false
   move_target_arrow_pos = { x = nil, y = nil, angle = nil }
 
+  selecting_target = nil
+  shot_target = nil
+
   entities = {}
 
   -- debug cards
