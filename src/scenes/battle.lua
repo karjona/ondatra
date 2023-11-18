@@ -33,6 +33,12 @@ function upd_battle()
   -- select the active ship
   select_ship()
 
+  if selected_ship.owner != "player" then
+    if battle_phase == "movement" then
+      move_enemy(selected_ship)
+    end
+  end
+
   -- interaction
 
   if not moving_ships then
@@ -64,6 +70,7 @@ end
 
 function drw_battle()
   draw_bg(level)
+  print(battle_phase, 1, 1, 7)
 
   -- draw ships
   for entity in all(entities) do

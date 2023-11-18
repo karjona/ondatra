@@ -12,13 +12,12 @@ function create_ship(owner, model)
     model = "fighter"
     x = 32
     y = 64
-    initiative = 20
   end
 
   if model == "creature" then
     x = rnd(128) + 8
     y = rnd(20) + 8
-    has_moved = true
+    initiative = 20
   end
 
   local myship = {
@@ -70,13 +69,12 @@ function draw_ship(ship)
   end
 
   rspr(x, y, angle, spr_x, spr_y, 1, false, 1)
-  if ship.has_moved and ship.owner == "player" then
-    if battle_phase == "shoot" and not moving_ships then
-      local x1, y1, x2, y2 = calc_range_vertices(ship)
-      line(x, y, x1, y1, 8)
-      line(x, y, x2, y2, 8)
-    end
-  end
+end
+
+function draw_rangelines(ship)
+  local x1, y1, x2, y2 = calc_range_vertices(ship)
+  line(x, y, x1, y1, 8)
+  line(x, y, x2, y2, 8)
 end
 
 function draw_selsquare(ship)

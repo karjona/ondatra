@@ -28,6 +28,7 @@ __lua__
 
 -- entities
 #include src/entities/ship.lua
+#include src/entities/enemy.lua
 
 -- levels
 #include src/levels/1.lua
