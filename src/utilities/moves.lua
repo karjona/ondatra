@@ -237,7 +237,7 @@ function move_ship()
   -- reset variables
   confirming_move = false
   selecting_move_menu_active = false
-  selecting_move = false
+  selecting_move = nil
   selected_move_confirm_option = 1
   selected_move_option = 1
   move_speed = 1
@@ -245,4 +245,34 @@ function move_ship()
 
   -- set battle state
   moving_ships = true
+end
+
+function animate_ship(ship)
+  local moved = false
+  if moving_ships and ship.dx != 0 then
+    moved = true
+    ship.x += ship.dx
+    if ship.x == ship.move_x then
+      ship.dx = 0
+      ship.move_x = nil
+    end
+  end
+  if moving_ships and ship.dy != 0 then
+    moved = true
+    ship.y += ship.dy
+    if ship.y == ship.move_y then
+      ship.dy = 0
+      ship.move_y = nil
+    end
+  end
+  if moving_ships and ship.dangle != 0 then
+    moved = true
+    ship.angle += ship.dangle
+    if ship.angle == ship.move_angle then
+      ship.dangle = 0
+      ship.move_angle = nil
+    end
+  end
+
+  return moved
 end

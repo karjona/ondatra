@@ -26,9 +26,10 @@ function start_game()
 
   cards = {}
   viewing_cards = false
+  selected_card = 1
 
-  battle_phase = "movement"
-  selecting_move = false
+  selected_ship = nil
+  selecting_move = nil
   selected_move_option = 1
   selecting_move_menu_active = false
   confirming_move = false
@@ -37,6 +38,9 @@ function start_game()
   move_speed = 1
   moving_ships = false
   move_target_arrow_pos = { x = nil, y = nil, angle = nil }
+
+  selecting_target = nil
+  shot_target = nil
 
   entities = {}
 

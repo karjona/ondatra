@@ -1,268 +1,168 @@
 function upd_battle()
-  if selected_card == nil then
-    selected_card = 1
-  end
+  -- update ship and game states
 
+  -- we set the default battle phase to shoot
+  -- if there's a ship yet to move, we set it to movement later
+  selected_ship = nil
   battle_phase = "shoot"
+
+  local ship_moved = false
+  local enemies_left = 0
+  local bullet_count = 0
   for entity in all(entities) do
-    if entity.type == "ship" and entity.owner == "player" then
-      if entity.has_moved == false then
-        battle_phase = "movement"
-        break
+    if entity.type == "bullet" then
+      bullet_count += 1
+      if entity.x < entity.tx then
+        entity.x += 1
+      elseif entity.x > entity.tx then
+        entity.x -= 1
+      end
+
+      if entity.y < entity.ty then
+        entity.y += 1
+      elseif entity.y > entity.ty then
+        entity.y -= 1
+      end
+
+      if entity.x == entity.tx and entity.y == entity.ty then
+        del(entities, entity)
+        entity.target.health = 0
       end
     end
-  end
 
-  if #radio > 0 then
-    if btnp(❎) or btnp(🅾️) or btnp(⬇️) then
-      sfx(0)
-      deli(radio, 1)
-      return
-    end
-  else
-    if not moving_ships then
-      -- no radio messages in queue
-      if viewing_cards == false then
-        -- map view
-        if btnp(🅾️) and selecting_move == false then
-          sfx(0)
-          viewing_cards = true
-          return
-        end
-        if btnp(❎) and selecting_move == false then
-          for entity in all(entities) do
-            if entity.selected then
-              if entity.type == "ship" then
-                sfx(0)
-                selecting_move = entity
-                selecting_move_menu_active = true
-                return
-              end
+    if entity.type == "ship" then
+      -- destroy ship if health is 0
+      if entity.health <= 0 then
+        del(entities, entity)
+      end
+
+      if entity.owner == "cpu" then
+        enemies_left += 1
+      end
+
+      -- animate ship movement
+      if animate_ship(entity) then
+        ship_moved = true
+      end
+
+      -- determine if we are on the movement phase
+      if entity.has_moved == false then
+        battle_phase = "movement"
+      end
+
+      if battle_phase == "shoot" then
+        if selecting_target and not shot_target then
+          if entity.owner != "player" then
+            local x1, y1, x2, y2 = calc_range_vertices(selecting_target)
+            if is_enemy_in_range(entity.x, entity.y, selecting_target.x, selecting_target.y, x1, y1, x2, y2) then
+              shot_target = entity
             end
           end
         end
-        -- select move menu
-        if btnp(🅾️) and selecting_move_menu_active then
-          sfx(0)
-          selecting_move = false
-          selecting_move_menu_active = false
-          selected_move_option = 1
-          move_speed = 1
-          return
-        end
-        if btnp(⬇️) and selecting_move_menu_active then
-          sfx(0)
-          if selected_move_option < 4 then
-            selected_move_option += 1
-            return
-          else
-            selected_move_option = 1
-            return
-          end
-        end
-        if btnp(⬆️) and selecting_move_menu_active then
-          sfx(0)
-          if selected_move_option > 1 then
-            selected_move_option -= 1
-            return
-          else
-            selected_move_option = 4
-            return
-          end
-        end
-        if btnp(➡️) and selecting_move_menu_active then
-          sfx(0)
-          if move_speed >= selecting_move.max_speed then
-            move_speed = 1
-            return
-          else
-            move_speed += 1
-            return
-          end
-        end
-        if btnp(⬅️) and selecting_move_menu_active then
-          sfx(0)
-          if move_speed <= 1 then
-            move_speed = selecting_move.max_speed
-            return
-          else
-            move_speed -= 1
-            return
-          end
-        end
-        if btnp(❎) and selecting_move_menu_active then
-          if move_table[selected_move_option] == "straight" then
-            -- straight: show confirm move
-            sfx(0)
-            confirming_move = true
-            selecting_move_menu_active = false
-            return
-          elseif move_table[selected_move_option] == "bank"
-              or move_table[selected_move_option] == "turn" then
-            sfx(0)
-            confirming_orientation = true
-            move_orientation = 1
-            selecting_move_menu_active = false
-            return
-          elseif move_table[selected_move_option] == "advanced" then
-            sfx(0)
-          end
-        end
-
-        -- confirm move orientation
-        if btnp(❎) and confirming_orientation then
-          sfx(0)
-          confirming_orientation = false
-          confirming_move = true
-          return
-        end
-        if btnp(🅾️) and confirming_orientation then
-          sfx(0)
-          selecting_move_menu_active = true
-          confirming_orientation = false
-          return
-        end
-        if (btnp(⬆️) or btnp(⬇️)) and confirming_orientation then
-          sfx(0)
-          if move_orientation == 1 then
-            move_orientation = 2
-            return
-          else
-            move_orientation = 1
-            return
-          end
-        end
-
-        -- confirm move dialog
-        if btnp(❎) and confirming_move then
-          sfx(0)
-          if selected_move_confirm_option == 1 then
-            -- select ok in confirm mode menu
-            move_ship(selecting_move)
-            return
-          else
-            -- selected cancel in confirm move menu
-            confirming_move = false
-            selecting_move_menu_active = true
-            selected_move_confirm_option = 1
-          end
-        end
-        if btnp(🅾️) and confirming_move then
-          sfx(0)
-          selecting_move_menu_active = true
-          confirming_move = false
-          selected_move_confirm_option = 1
-          return
-        end
-        if btnp(⬇️) and confirming_move then
-          sfx(0)
-          if selected_move_confirm_option < 2 then
-            selected_move_confirm_option += 1
-            return
-          else
-            selected_move_confirm_option = 1
-            return
-          end
-        end
-        if btnp(⬆️) and confirming_move then
-          sfx(0)
-          if selected_move_confirm_option > 1 then
-            selected_move_confirm_option -= 1
-            return
-          else
-            selected_move_confirm_option = 2
-            return
-          end
-        end
-      else
-        -- card screen
-        if btnp(🅾️) then
-          sfx(0)
-          viewing_cards = false
-          return
-        end
-
-        if btnp(⬅️) then
-          sfx(0)
-          if selected_card > 1 then
-            selected_card = selected_card - 1
-            return
-          else
-            selected_card = #cards
-            return
-          end
-        end
-
-        if btnp(➡️) then
-          sfx(0)
-          if selected_card < #cards then
-            selected_card = selected_card + 1
-            return
-          else
-            selected_card = 1
-            return
-          end
-        end
       end
+    end
+  end
+
+  if enemies_left == 0 and bullet_count == 0 then
+    _drw = drw_won
+    _upd = upd_won
+  end
+
+  if ship_moved then moving_ships = true else moving_ships = false end
+
+  -- select the active ship
+  if bullet_count == 0 then select_ship() end
+  if not selected_ship then
+    reset_turn()
+    return
+  end
+
+  -- enemy behaviour
+  if selected_ship.owner != "player" then
+    if battle_phase == "movement" then
+      move_enemy(selected_ship)
+    end
+
+    if battle_phase == "shoot" then
+      shoot_enemy(selected_ship)
+    end
+  end
+
+  -- interaction
+
+  if not moving_ships then
+    if btnp(❎) then
+      battle_button_x()
+    end
+
+    if btnp(🅾️) then
+      battle_button_o()
+    end
+
+    if btnp(⬆️) then
+      battle_button_up()
+    end
+
+    if btnp(⬇️) then
+      battle_button_down()
+    end
+
+    if btnp(⬅️) then
+      battle_button_left()
+    end
+
+    if btnp(➡️) then
+      battle_button_right()
     end
   end
 end
 
 function drw_battle()
-  local ship_moved = false
-  local selected_ship = nil
   draw_bg(level)
 
-  -- draw and animate ships
+  -- draw entities
   for entity in all(entities) do
     if entity.type == "ship" then
       draw_ship(entity)
-      if entity.selected and not moving_ships then
-        draw_selsquare(entity)
-        selected_ship = entity
-      end
-      if moving_ships and entity.dx != 0 then
-        ship_moved = true
-        entity.x += entity.dx
-        if entity.x == entity.move_x then
-          entity.dx = 0
-          entity.move_x = nil
-        end
-      end
-      if moving_ships and entity.dy != 0 then
-        ship_moved = true
-        entity.y += entity.dy
-        if entity.y == entity.move_y then
-          entity.dy = 0
-          entity.move_y = nil
-        end
-      end
-      if moving_ships and entity.dangle != 0 then
-        ship_moved = true
-        entity.angle += entity.dangle
-        if entity.angle == entity.move_angle then
-          entity.dangle = 0
-          entity.move_angle = nil
-        end
+      if entity == shot_target and not moving_ships then
+        draw_shottarget(entity)
       end
     end
+
+    if entity.type == "bullet" then
+      draw_bullet(entity)
+    end
   end
+  if selected_ship and not moving_ships then draw_selsquare(selected_ship) end
 
   if battle_phase == "shoot" then
     -- draw shoot menu
   end
 
   -- draw move menu
-  if selecting_move then
-    draw_move_menu(selecting_move)
+  if battle_phase == "movement" then
+    if selecting_move then
+      draw_move_menu(selecting_move)
+    end
+
+    if confirming_orientation then
+      draw_move_orientation_select(selecting_move)
+    end
+
+    if confirming_move then
+      draw_move_confirm()
+    end
   end
 
-  if confirming_orientation then
-    draw_move_orientation_select(selecting_move)
-  end
+  -- draw shoot phase
+  if battle_phase == "shoot" then
+    if selecting_target then
+      draw_rangelines(selecting_target)
+    end
 
-  if confirming_move then
-    draw_move_confirm()
+    if shot_target then
+      print("90%", shot_target.x + 6, shot_target.y - 6, 7)
+    end
   end
 
   -- draw cards
@@ -308,25 +208,46 @@ function drw_battle()
 
   -- ui
   if #radio == 0 then
-    if not moving_ships then
-      if viewing_cards == false and not selecting_move then
-        print("🅾️ cards", 91, 1, 7)
-        if battle_phase == "movement" then
-          print("❎ move", 91, 8, 7)
-        elseif battle_phase == "shoot" then
-          print("❎ shoot", 91, 8, 7)
+    if selected_ship and selected_ship.owner == "player" then
+      if not moving_ships then
+        if viewing_cards == false
+            and not selecting_move
+            and not selecting_target then
+          print("🅾️ cards", 91, 1, 7)
+          if battle_phase == "movement" then
+            print("❎ move", 91, 8, 7)
+          elseif battle_phase == "shoot" then
+            if not shot_target then
+              print("❎ shoot", 91, 8, 7)
+            end
+          end
+        elseif selecting_move then
+          print("🅾️ cancel", 91, 1, 7)
+          print("❎ ok", 91, 8, 7)
+          print("⬆️⬇️ select", 83, 15, 7)
+        elseif selecting_target then
+          print("🅾️ cancel", 91, 1, 7)
+          print("⬅️➡️ select", 83, 15, 7)
+          if shot_target then
+            print("❎ fire!", 91, 8, 8)
+          else
+            print("❎ pass", 91, 8, 7)
+          end
+        else
+          print("🅾️ map", 91, 1, 7)
+          print("❎ play", 91, 8, 7)
+          print("⬅️➡️ select", 83, 15, 7)
         end
-      elseif selecting_move then
-        print("🅾️ cancel", 91, 1, 7)
-        print("❎ ok", 91, 8, 7)
-        print("⬆️⬇️ select", 83, 15, 7)
-      else
-        print("🅾️ map", 91, 1, 7)
-        print("❎ play", 91, 8, 7)
-        print("⬅️➡️ select", 83, 15, 7)
       end
     end
   end
+end
 
-  if not ship_moved then moving_ships = false end
+function reset_turn()
+  for entity in all(entities) do
+    if entity.type == "ship" then
+      entity.has_moved = false
+      entity.has_shot = false
+    end
+  end
 end
