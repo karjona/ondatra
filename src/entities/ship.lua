@@ -96,14 +96,8 @@ function draw_shottarget(ship)
   local x = ship.x
   local y = ship.y
 
-  -- calculate the current frame based on the time
-  -- frames are 89, 90, 91
-  -- when we reach frame 91, we should go back to 90 and then 89 and restart again
-  local frame = flr(t() / 0.15) % 5
+  local frame = flr(t() / 0.1) % 4
+  local sprite = frame == 3 and 90 or 89 + frame
 
-  -- use the frame to determine the sprite
-  local arrowspr = 89 + frame
-
-  -- draw the sprite above the ship
-  spr(arrowspr, x - 3, y - 10)
+  spr(sprite, x - 4, y - 10)
 end
