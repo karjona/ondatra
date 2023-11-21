@@ -13,11 +13,6 @@ function change_speed(speed)
   end
 end
 
-function change_card(direction)
-  sfx(0)
-  selected_card = (selected_card + direction - 1 + #cards) % #cards + 1
-end
-
 function change_move(direction)
   sfx(0)
   selected_move_option = (selected_move_option + direction - 1 + #move_table) % #move_table + 1

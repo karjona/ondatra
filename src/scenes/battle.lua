@@ -165,44 +165,6 @@ function drw_battle()
     end
   end
 
-  -- draw cards
-  for i = 1, #cards do
-    local card = cards[i]
-    local cardx = 10
-    local targety = 118
-
-    -- move selected card up
-    if selected_card == i and viewing_cards then
-      targety -= 52
-    end
-
-    -- animate cards
-    if targety < card.y then
-      card.spd = -4
-    elseif targety > card.y then
-      card.spd = 4
-    elseif targety == card.y then
-      card.spd = 0
-    end
-    card.y += card.spd
-
-    if #cards >= 3 then
-      -- to get the size of the dock where we put the cards
-      -- we substract the margins and the width of the card
-      -- from the screen width
-      local docksize = 128 - cardx * 2 - cardw
-
-      -- we divide the dock size by the number of cards
-      -- minus one to get the gap between each card
-      local gap = docksize / (#cards - 1)
-      draw_card(card, cardx + i * gap - gap, card.y)
-    elseif #cards == 2 then
-      draw_card(card, cardx + i * 37 - 37, card.y)
-    else
-      draw_card(card, cardx, card.y)
-    end
-  end
-
   -- print radio messages
   print_radio()
 
@@ -210,18 +172,15 @@ function drw_battle()
   if #radio == 0 then
     if selected_ship and selected_ship.owner == "player" then
       if not moving_ships then
-        if viewing_cards == false
-            and not selecting_move
-            and not selecting_target then
-          print("🅾️ cards", 91, 1, 7)
-          if battle_phase == "movement" then
-            print("❎ move", 91, 8, 7)
-          elseif battle_phase == "shoot" then
-            if not shot_target then
-              print("❎ shoot", 91, 8, 7)
-            end
+        if battle_phase == "movement"
+            and not selecting_move then
+          print("❎ move", 91, 1, 7)
+        elseif battle_phase == "shoot" then
+          if not shot_target then
+            print("❎ shoot", 91, 1, 7)
           end
-        elseif selecting_move then
+        end
+        if selecting_move then
           print("🅾️ cancel", 91, 1, 7)
           print("❎ ok", 91, 8, 7)
           print("⬆️⬇️ select", 83, 15, 7)
@@ -233,10 +192,6 @@ function drw_battle()
           else
             print("❎ pass", 91, 8, 7)
           end
-        else
-          print("🅾️ map", 91, 1, 7)
-          print("❎ play", 91, 8, 7)
-          print("⬅️➡️ select", 83, 15, 7)
         end
       end
     end
