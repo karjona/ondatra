@@ -4,10 +4,6 @@ function battle_button_x()
     return
   end
 
-  if viewing_cards then
-    return
-  end
-
   if battle_phase == "movement" then
     -- if all moves menus are closed, open the main move menu
     if not selecting_move_menu_active
@@ -89,21 +85,6 @@ function battle_button_o()
   if #radio > 0 then
     del_msg()
     return
-  end
-
-  -- open and close the card viewer when not doing any other actions
-  if not selecting_move and not selecting_target then
-    if not viewing_cards then
-      sfx(0)
-      viewing_cards = true
-      return
-    end
-
-    if viewing_cards then
-      sfx(0)
-      viewing_cards = false
-      return
-    end
   end
 
   if battle_phase == "movement" then
@@ -189,21 +170,11 @@ function battle_button_left()
     change_speed(-1)
     return
   end
-
-  if viewing_cards then
-    change_card(-1)
-    return
-  end
 end
 
 function battle_button_right()
   if selecting_move_menu_active then
     change_speed(1)
-    return
-  end
-
-  if viewing_cards then
-    change_card(1)
     return
   end
 end

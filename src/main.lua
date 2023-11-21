@@ -24,10 +24,6 @@ function start_game()
   level = 1
   radio = {}
 
-  cards = {}
-  viewing_cards = false
-  selected_card = 1
-
   selected_ship = nil
   selecting_move = nil
   selected_move_option = 1
@@ -43,13 +39,6 @@ function start_game()
   shot_target = nil
 
   entities = {}
-
-  -- debug cards
-  create_card("my card")
-  create_card("two cards")
-  create_card("three")
-  --create_card("four")
-  --create_card("five")
 
   -- debug radio messages
   say("a.", "hello! this is a test radio message!", true)

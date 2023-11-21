@@ -17,7 +17,6 @@ __lua__
 
 -- utilities
 #include src/utilities/say.lua
-#include src/utilities/cards.lua
 #include src/utilities/log.lua
 #include src/utilities/rspr.lua
 #include src/utilities/bg.lua
