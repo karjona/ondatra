@@ -1,6 +1,7 @@
 function create_ship(owner, model)
   local x = 0
   local y = 0
+  local angle = 0
   local initiative = 40
   local has_moved = false
 
@@ -15,9 +16,10 @@ function create_ship(owner, model)
   end
 
   if model == "creature" then
-    x = rnd(64) + 8
+    x = 40
     y = rnd(20) + 8
     initiative = 20
+    angle = 180
   end
 
   local myship = {
@@ -29,7 +31,7 @@ function create_ship(owner, model)
     has_shot = false,
     x = x,
     y = y,
-    angle = 0,
+    angle = angle,
     move_x = nil,
     move_y = nil,
     move_angle = nil,

@@ -71,20 +71,24 @@ function upd_battle()
   if ship_moved then moving_ships = true else moving_ships = false end
 
   -- select the active ship
-  if bullet_count == 0 then select_ship() end
-  if not selected_ship then
-    reset_turn()
-    return
+  if not moving_ships then
+    if bullet_count == 0 then select_ship() end
+    if not selected_ship then
+      reset_turn()
+      return
+    end
   end
 
   -- enemy behaviour
-  if selected_ship.owner != "player" then
-    if battle_phase == "movement" then
-      move_enemy(selected_ship)
-    end
+  if not moving_ships then
+    if selected_ship.owner != "player" then
+      if battle_phase == "movement" then
+        move_enemy(selected_ship)
+      end
 
-    if battle_phase == "shoot" then
-      shoot_enemy(selected_ship)
+      if battle_phase == "shoot" then
+        shoot_enemy(selected_ship)
+      end
     end
   end
 
@@ -126,6 +130,9 @@ function drw_battle()
       draw_ship(entity)
       if entity == shot_target and not moving_ships then
         draw_shottarget(entity)
+      end
+      if entity.owner != "player" then
+        draw_rangelines(entity)
       end
     end
 

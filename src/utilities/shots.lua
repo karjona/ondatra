@@ -7,20 +7,25 @@ function is_enemy_in_range(enx, eny, shipx, shipy, x2, y2, x3, y3)
   return a >= 0 and a <= 1 and b >= 0 and b <= 1 and c >= 0 and c <= 1
 end
 
-function calc_range_vertices(ship, range)
-  local x = ship.x
-  local y = ship.y
-
+function normalize_angle(angle)
   -- for pico8, angle 0 is ship aiming to the right
   -- for us, angle 0 is ship aiming up
   -- convert to pico8 angle by substracting a full
   -- counter-clockwise rotation + 90 degrees
-  local angle = (450 - ship.angle) % 360
+  local normalized_angle = (450 - angle) % 360
+  return normalized_angle
+end
+
+function calc_range_vertices(ship, range)
+  local x = ship.x
+  local y = ship.y
+
+  local angle = normalize_angle(ship.angle)
 
   local a1 = (angle % 360 - 45) / 360
   local a2 = (angle % 360 + 45) / 360
   if range == nil then
-    range = 64
+    range = 48
   end
 
   local x1 = range * cos(a1) + x
