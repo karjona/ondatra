@@ -131,9 +131,6 @@ function drw_battle()
       if entity == shot_target and not moving_ships then
         draw_shottarget(entity)
       end
-      if entity.owner != "player" then
-        draw_rangelines(entity)
-      end
     end
 
     if entity.type == "bullet" then
