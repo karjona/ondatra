@@ -6,26 +6,32 @@ function enemy_move(ship)
 end
 
 function enemy_shoot(ship)
-  log("enemy shot!")
-  ship.has_shot = true
+  if t() % 2 == 0 then
+    local potential_targets = search_player_ship(ship)
+    enemy_shoot_execute(ship, potential_targets)
+  end
+end
+
+function enemy_shoot_execute(ship, ships_to_shoot)
+  if #ships_to_shoot > 0 then
+    -- pick a random solution
+    local solution = rnd(ships_to_shoot)
+    shoot_ship(ship, solution)
+  else
+    -- pass the turn
+    ship.has_shot = true
+  end
 end
 
 function enemy_move_execute(ship, solutions)
   if #solutions > 0 then
-    log("solutions found: " .. #solutions)
     -- pick a random solution
     local solution = rnd(solutions)
-    if solution.move_type == "straight" then
-      log("solution: " .. solution.move_type .. " " .. solution.speed)
-    else
-      log("solution: " .. solution.move_type .. " " .. solution.speed .. " " .. solution.direction)
-    end
 
     -- move the ship
     local move_end = calc_move_end_position(ship, solution.move_type, solution.speed, solution.direction)
     move_ship(ship, move_end.x, move_end.y, move_end.angle)
   else
-    log("no solutions found, move at random")
     -- move the ship at random
     local move_type = rnd({ "straight", "turn", "bank" })
     local speed = flr(rnd(ship.max_speed)) + 1
@@ -45,24 +51,32 @@ function search_player_ship(ship)
     local distance = get_ships_distance(ship, player_ship)
     local max_distance = ship.max_speed * 8 + ship.max_range * 8
     if distance <= max_distance then
-      -- theres three types of moves a ship can do:
-      -- straight, turn and bank
-      -- each move can have a different speed, based on the ship's max speed
-      -- turn and bank can rotate the ship +- 90º or 45º, respectively
-      -- for each move combination, check if the player ship would be in range
-      -- if it is, add it to the potential solutions
-      -- if not, continue to the next move combination
+      if battle_phase == "movement" then
+        -- theres three types of moves a ship can do:
+        -- straight, turn and bank
+        -- each move can have a different speed, based on the ship's max speed
+        -- turn and bank can rotate the ship +- 90º or 45º, respectively
+        -- for each move combination, check if the player ship would be in range
+        -- if it is, add it to the potential solutions
+        -- if not, continue to the next move combination
 
-      local move_types = { "straight", "turn", "bank" }
-      local directions = { "right", "left" }
+        local move_types = { "straight", "turn", "bank" }
+        local directions = { "right", "left" }
 
-      for move_type in all(move_types) do
-        if move_type == "straight" then
-          calc_enemy_move_solutions(ship, player_ship, solutions, move_type)
-        else
-          for direction in all(directions) do
-            calc_enemy_move_solutions(ship, player_ship, solutions, move_type, direction)
+        for move_type in all(move_types) do
+          if move_type == "straight" then
+            calc_enemy_move_solutions(ship, player_ship, solutions, move_type)
+          else
+            for direction in all(directions) do
+              calc_enemy_move_solutions(ship, player_ship, solutions, move_type, direction)
+            end
           end
+        end
+      elseif battle_phase == "shoot" then
+        -- check if the player ship is in range
+        local x1, y1, x2, y2 = calc_range_vertices(ship.x, ship.y, ship.max_range, ship.angle)
+        if is_enemy_in_range(player_ship.x, player_ship.y, ship.x, ship.y, x1, y1, x2, y2) then
+          add(solutions, player_ship)
         end
       end
     end

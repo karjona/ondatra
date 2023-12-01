@@ -46,7 +46,9 @@ function start_game()
 
   -- debug entities
   create_ship()
-  create_ship("cpu", "creature")
+  for i = 1, flr(rnd(5) + 1) do
+    create_ship("cpu", "creature")
+  end
 
   _upd = upd_battle
   _drw = drw_battle

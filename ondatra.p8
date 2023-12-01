@@ -14,6 +14,7 @@ __lua__
 #include src/scenes/logo.lua
 #include src/scenes/battle.lua
 #include src/scenes/won.lua
+#include src/scenes/gameover.lua
 
 -- utilities
 #include src/utilities/say.lua

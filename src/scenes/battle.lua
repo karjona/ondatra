@@ -8,6 +8,7 @@ function upd_battle()
 
   local ship_moved = false
   local enemies_left = 0
+  local player_ships_left = 0
   local bullet_count = 0
   for entity in all(entities) do
     if entity.type == "bullet" then
@@ -40,6 +41,10 @@ function upd_battle()
         enemies_left += 1
       end
 
+      if entity.owner == "player" then
+        player_ships_left += 1
+      end
+
       -- animate ship movement
       if animate_ship(entity) then
         ship_moved = true
@@ -63,9 +68,15 @@ function upd_battle()
     end
   end
 
-  if enemies_left == 0 and bullet_count == 0 then
-    _drw = drw_won
-    _upd = upd_won
+  -- check if the game is over
+  if bullet_count == 0 then
+    if enemies_left == 0 then
+      _drw = drw_won
+      _upd = upd_won
+    elseif player_ships_left == 0 then
+      _drw = drw_gameover
+      _upd = upd_gameover
+    end
   end
 
   if ship_moved then moving_ships = true else moving_ships = false end

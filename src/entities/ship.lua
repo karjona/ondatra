@@ -11,13 +11,13 @@ function create_ship(owner, model)
 
   if model == nil then
     model = "fighter"
-    x = 48
+    x = 64
     y = 64
   end
 
   if model == "creature" then
-    x = 90
-    y = 76
+    x = 8 + flr(rnd(112))
+    y = 8 + flr(rnd(112))
     initiative = 20
     angle = 0
   end
@@ -45,7 +45,7 @@ function create_ship(owner, model)
     energy = 100,
     max_energy = 100,
     max_speed = 4,
-    max_range = 4
+    max_range = 4.5
   }
 
   add(entities, myship)
