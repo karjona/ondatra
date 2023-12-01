@@ -33,7 +33,6 @@ function start_game()
   selected_move_confirm_option = 1
   move_speed = 1
   moving_ships = false
-  move_target_arrow_pos = { x = nil, y = nil, angle = nil }
 
   selecting_target = nil
   shot_target = nil

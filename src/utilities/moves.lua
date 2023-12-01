@@ -145,13 +145,6 @@ function draw_arrow(ship, type, speed)
 
       rspr(ship.x + x_offset * speed + arrow_x_offset, ship.y - speed * y_offset + arrow_y_offset, arrow_angle / 360, spr_mapx, spr_mapy, 3.5, true, 1)
     end
-
-    move_target_arrow_pos = { x = ship.x + x_offset * speed + arrow_x_offset, y = ship.y - speed * y_offset + arrow_y_offset }
-    if move_orientation == 2 then
-      move_target_arrow_pos.angle = ship.angle - 45
-    else
-      move_target_arrow_pos.angle = ship.angle + 45
-    end
   end
 
   if type == "turn" then
@@ -169,13 +162,6 @@ function draw_arrow(ship, type, speed)
     else
       rspr(ship.x + x_offset * speed, ship.y - speed * y_offset, angle, 9.5, .5, 3.5, true, 1)
     end
-
-    move_target_arrow_pos = { y = ship.y - speed * y_offset, x = ship.x + x_offset * speed }
-    if move_orientation == 2 then
-      move_target_arrow_pos.angle = ship.angle - 90
-    else
-      move_target_arrow_pos.angle = ship.angle + 90
-    end
   end
 
   if type == "straight" then
@@ -184,9 +170,6 @@ function draw_arrow(ship, type, speed)
     end
     move_end = calc_move_end_position(ship, "straight", speed)
     rspr(move_end.x, move_end.y, ship.angle / 360, 2.5, .5, 1, false, 1)
-
-    -- should remove this once all the move types are implemented
-    move_target_arrow_pos = { x = move_end.x, y = move_end.y, angle = move_end.angle }
   end
 end
 
@@ -232,15 +215,9 @@ function draw_move_orientation_select(ship)
 end
 
 function move_ship(ship, x, y, angle)
-  if ship.owner == "player" then
-    ship.move_x = move_target_arrow_pos.x
-    ship.move_y = move_target_arrow_pos.y
-    ship.move_angle = move_target_arrow_pos.angle
-  else
-    ship.move_x = x
-    ship.move_y = y
-    ship.move_angle = angle
-  end
+  ship.move_x = x
+  ship.move_y = y
+  ship.move_angle = angle
 
   -- set ship dx, dy, and dangle
   if ship.move_x > ship.x then
@@ -268,7 +245,6 @@ function move_ship(ship, x, y, angle)
   selected_move_confirm_option = 1
   selected_move_option = 1
   move_speed = 1
-  move_target_arrow_pos = { x = nil, y = nil, angle = nil }
 
   -- set battle state
   moving_ships = true
