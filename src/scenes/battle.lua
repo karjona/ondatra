@@ -53,7 +53,7 @@ function upd_battle()
       if battle_phase == "shoot" then
         if selecting_target and not shot_target then
           if entity.owner != "player" then
-            local x1, y1, x2, y2 = calc_range_vertices(selecting_target)
+            local x1, y1, x2, y2 = calc_range_vertices(selecting_target.x, selecting_target.y, selecting_target.max_range, selecting_target.angle)
             if is_enemy_in_range(entity.x, entity.y, selecting_target.x, selecting_target.y, x1, y1, x2, y2) then
               shot_target = entity
             end

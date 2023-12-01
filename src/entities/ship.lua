@@ -11,15 +11,15 @@ function create_ship(owner, model)
 
   if model == nil then
     model = "fighter"
-    x = 32
+    x = 48
     y = 64
   end
 
   if model == "creature" then
     x = 32
-    y = 32
+    y = 24
     initiative = 20
-    angle = 180
+    angle = 90
   end
 
   local myship = {
@@ -74,7 +74,7 @@ function draw_ship(ship)
 end
 
 function draw_rangelines(ship)
-  local x1, y1, x2, y2 = calc_range_vertices(ship)
+  local x1, y1, x2, y2 = calc_range_vertices(ship.x, ship.y, ship.max_range, ship.angle)
   line(ship.x, ship.y, x1, y1, 8)
   line(ship.x, ship.y, x2, y2, 8)
 end
