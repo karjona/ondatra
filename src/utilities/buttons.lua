@@ -49,8 +49,7 @@ function battle_button_x()
       sfx(0)
       if selected_move_confirm_option == 1 then
         -- select ok in confirm mode menu
-        selecting_move.has_moved = true
-        move_ship()
+        move_ship(selected_ship)
         return
       else
         -- selected cancel in confirm move menu

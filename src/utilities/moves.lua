@@ -1,8 +1,8 @@
 move_table = { "straight", "bank", "turn", "advanced" }
 orientation_table = { "right", "left" }
 
-function calculateOffsets(ship)
-  local angle = ship.angle % 360
+function calculateOffsets(angle)
+  local a = angle % 360
 
   local offsetTable = {
     [0] = { y_offset = 8 },
@@ -15,7 +15,16 @@ function calculateOffsets(ship)
     [315] = { x_offset = -5, y_offset = 5 }
   }
 
-  return offsetTable[angle] or {}
+  return offsetTable[a] or {}
+end
+
+function calc_move_end_position(ship, move_type, speed, direction)
+  local offsets = calculateOffsets(ship.angle)
+  x_offset, y_offset = offsets.x_offset or 0, offsets.y_offset or 0
+
+  if move_type == "straight" then
+    return { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle }
+  end
 end
 
 function draw_move_menu(ship)
@@ -64,7 +73,8 @@ function draw_move_menu(ship)
 end
 
 function draw_arrow(ship, type, speed)
-  local offsets = calculateOffsets(ship)
+  local move_end = {}
+  local offsets = calculateOffsets(ship.angle)
   x_offset, y_offset = offsets.x_offset or 0, offsets.y_offset or 0
 
   if type == "bank" then
@@ -160,8 +170,11 @@ function draw_arrow(ship, type, speed)
     for i = 1, speed - 1 do
       rspr(ship.x + x_offset * i, ship.y - i * y_offset, ship.angle / 360, 4.5, .5, 1, false, 1)
     end
-    rspr(ship.x + x_offset * speed, ship.y - speed * y_offset, ship.angle / 360, 2.5, .5, 1, false, 1)
-    move_target_arrow_pos = { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle }
+    move_end = calc_move_end_position(ship, "straight", speed)
+    rspr(move_end.x, move_end.y, ship.angle / 360, 2.5, .5, 1, false, 1)
+
+    -- should remove this once all the move types are implemented
+    move_target_arrow_pos = { x = move_end.x, y = move_end.y, angle = move_end.angle }
   end
 end
 
@@ -206,12 +219,16 @@ function draw_move_orientation_select(ship)
   end
 end
 
-function move_ship()
-  local ship = selecting_move
-
-  ship.move_x = move_target_arrow_pos.x
-  ship.move_y = move_target_arrow_pos.y
-  ship.move_angle = move_target_arrow_pos.angle
+function move_ship(ship, x, y, angle)
+  if ship.owner == "player" then
+    ship.move_x = move_target_arrow_pos.x
+    ship.move_y = move_target_arrow_pos.y
+    ship.move_angle = move_target_arrow_pos.angle
+  else
+    ship.move_x = x
+    ship.move_y = y
+    ship.move_angle = angle
+  end
 
   -- set ship dx, dy, and dangle
   if ship.move_x > ship.x then

@@ -39,6 +39,10 @@ function search_player_ship(ship)
     end
   end
 
+  log("moving speed 1 straight")
+  local move_end = calc_move_end_position(ship, "straight", 1)
+  move_ship(ship, move_end.x, move_end.y, move_end.angle)
+
   -- no player ships are in range, return false
   --log("no player ships in range")
   return false
