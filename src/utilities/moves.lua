@@ -24,6 +24,18 @@ function calc_move_end_position(ship, move_type, speed, direction)
 
   if move_type == "straight" then
     return { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle }
+  elseif move_type == "turn" then
+    if direction == "right" then
+      return { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle + 90 }
+    else
+      return { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle - 90 }
+    end
+  elseif move_type == "bank" then
+    if direction == "right" then
+      return { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle + 45 }
+    else
+      return { x = ship.x + x_offset * speed, y = ship.y - speed * y_offset, angle = ship.angle - 45 }
+    end
   end
 end
 

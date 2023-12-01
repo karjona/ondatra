@@ -16,10 +16,10 @@ function create_ship(owner, model)
   end
 
   if model == "creature" then
-    x = 32
-    y = 24
+    x = 90
+    y = 76
     initiative = 20
-    angle = 90
+    angle = 0
   end
 
   local myship = {

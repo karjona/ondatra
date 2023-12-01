@@ -1,7 +1,7 @@
 function enemy_move(ship)
   if t() % 2 == 0 then
     local potential_targets = search_player_ship(ship)
-    log("enemy moved")
+    enemy_move_execute(ship, potential_targets)
   end
 end
 
@@ -10,29 +10,39 @@ function enemy_shoot(ship)
   ship.has_shot = true
 end
 
+function enemy_move_execute(ship, solutions)
+  if #solutions > 0 then
+    log("solutions found: " .. #solutions)
+    -- pick a random solution
+    local solution = rnd(solutions)
+    if solution.move_type == "straight" then
+      log("solution: " .. solution.move_type .. " " .. solution.speed)
+    else
+      log("solution: " .. solution.move_type .. " " .. solution.speed .. " " .. solution.direction)
+    end
+
+    -- move the ship
+    local move_end = calc_move_end_position(ship, solution.move_type, solution.speed, solution.direction)
+    move_ship(ship, move_end.x, move_end.y, move_end.angle)
+  else
+    log("no solutions found, move at random")
+    -- move the ship at random
+    local move_type = rnd({ "straight", "turn", "bank" })
+    local speed = flr(rnd(ship.max_speed)) + 1
+    local direction = rnd({ "left", "right" })
+    local move_end = calc_move_end_position(ship, move_type, speed, direction)
+    move_ship(ship, move_end.x, move_end.y, move_end.angle)
+  end
+end
+
 function search_player_ship(ship)
   -- get all player ships
   local player_ships = get_player_ships()
-  local potential_targets = {}
+  local solutions = {}
 
-  -- for each player ship, check if it is in range
+  -- for each player ship, check if it can be a possible target
   for i, player_ship in ipairs(player_ships) do
-    -- get distance from enemy ship to player ship
-    log("player ship: " .. player_ship.x .. ", " .. player_ship.y)
-
-    --[[
-      - si esa nave del jugador está a más de el máximo movimiento + el máximo rango de
-      - disparo, esa nave ya no es potencial objetivo
-
-      - si esa nave del jugador está a +- 136º de la nave enemiga, esa nave ya no es
-      - potencial objetivo
-
-      - para todos los demás casos, calcular si alguno de los posibles movimientos que puede
-      - efectuar la nave, la ponen en rango de disparo de la nave del jugador
-    ]]
-
     local distance = get_ships_distance(ship, player_ship)
-    log("distance: " .. distance)
     local max_distance = ship.max_speed * 8 + ship.max_range * 8
     if distance <= max_distance then
       -- theres three types of moves a ship can do:
@@ -40,10 +50,8 @@ function search_player_ship(ship)
       -- each move can have a different speed, based on the ship's max speed
       -- turn and bank can rotate the ship +- 90º or 45º, respectively
       -- for each move combination, check if the player ship would be in range
-      -- if it is, add it to the potential targets
+      -- if it is, add it to the potential solutions
       -- if not, continue to the next move combination
-      -- if none of the move combinations put the player ship in range, continue to the next player ship
-      -- if none of the player ships are in range, return false
 
       -- straight moves
       for i = 1, ship.max_speed do
@@ -52,42 +60,62 @@ function search_player_ship(ship)
         if distance <= ship.max_range * 8 then
           local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
           if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
-            log("[!] good solution: moving straight w/ speed " .. i .. " will work")
-            add(potential_targets, player_ship)
-            break
-          else
-            log("[x] moving straight w/ speed " .. i .. " wont work: not in correct angle")
+            add(solutions, { move_type = "straight", speed = i })
           end
-        else
-          log("[x] moving straight w/ speed " .. i .. " wont work: beyond max distance")
+        end
+      end
+
+      -- right turns
+      for i = 1, ship.max_speed do
+        local move_end = calc_move_end_position(ship, "turn", i, "right")
+        local distance = get_ships_distance(move_end, player_ship)
+        if distance <= ship.max_range * 8 then
+          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
+          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
+            add(solutions, { move_type = "turn", speed = i, direction = "right" })
+          end
+        end
+      end
+
+      -- left turns
+      for i = 1, ship.max_speed do
+        local move_end = calc_move_end_position(ship, "turn", i, "left")
+        local distance = get_ships_distance(move_end, player_ship)
+        if distance <= ship.max_range * 8 then
+          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
+          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
+            add(solutions, { move_type = "turn", speed = i, direction = "left" })
+          end
+        end
+      end
+
+      -- right banks
+      for i = 1, ship.max_speed do
+        local move_end = calc_move_end_position(ship, "bank", i, "right")
+        local distance = get_ships_distance(move_end, player_ship)
+        if distance <= ship.max_range * 8 then
+          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
+          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
+            add(solutions, { move_type = "bank", speed = i, direction = "right" })
+          end
+        end
+      end
+
+      -- left banks
+      for i = 1, ship.max_speed do
+        local move_end = calc_move_end_position(ship, "bank", i, "left")
+        local distance = get_ships_distance(move_end, player_ship)
+        if distance <= ship.max_range * 8 then
+          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
+          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
+            add(solutions, { move_type = "bank", speed = i, direction = "left" })
+          end
         end
       end
     end
 
-    --[[
-    if distance <= 36 then
-      log("player ship in range: " .. distance)
-      -- check if in correct angle
-      local x1, y1, x2, y2 = calc_range_vertices(ship)
-      if is_enemy_in_range(player_ship.x, player_ship.y, ship.x, ship.y, x1, y1, x2, y2) then
-        log("player ship in correct angle")
-      else
-        log("player ship not in correct angle")
-      end
-    elseif distance <= 70 then
-      log("not in range but potentially in range if moving towards it")
-    end
-    --]]
+    return solutions
   end
-
-  log("moving speed 1 straight")
-  local move_end = calc_move_end_position(ship, "straight", 1)
-  move_ship(ship, move_end.x, move_end.y, move_end.angle)
-  log("ship moved to: " .. ship.x .. ", " .. ship.y)
-
-  -- no player ships are in range, return false
-  --log("no player ships in range")
-  return potential_targets
 end
 
 function get_player_ships()
