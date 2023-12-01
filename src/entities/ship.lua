@@ -1,6 +1,7 @@
 function create_ship(owner, model)
   local x = 0
   local y = 0
+  local angle = 0
   local initiative = 40
   local has_moved = false
 
@@ -10,14 +11,15 @@ function create_ship(owner, model)
 
   if model == nil then
     model = "fighter"
-    x = 32
+    x = 64
     y = 64
   end
 
   if model == "creature" then
-    x = rnd(64) + 8
-    y = rnd(20) + 8
+    x = 8 + flr(rnd(112))
+    y = 8 + flr(rnd(112))
     initiative = 20
+    angle = 0
   end
 
   local myship = {
@@ -29,7 +31,7 @@ function create_ship(owner, model)
     has_shot = false,
     x = x,
     y = y,
-    angle = 0,
+    angle = angle,
     move_x = nil,
     move_y = nil,
     move_angle = nil,
@@ -42,7 +44,8 @@ function create_ship(owner, model)
     max_shield = 0,
     energy = 100,
     max_energy = 100,
-    max_speed = 4
+    max_speed = 4,
+    max_range = 4.5
   }
 
   add(entities, myship)
@@ -71,7 +74,7 @@ function draw_ship(ship)
 end
 
 function draw_rangelines(ship)
-  local x1, y1, x2, y2 = calc_range_vertices(ship)
+  local x1, y1, x2, y2 = calc_range_vertices(ship.x, ship.y, ship.max_range, ship.angle)
   line(ship.x, ship.y, x1, y1, 8)
   line(ship.x, ship.y, x2, y2, 8)
 end

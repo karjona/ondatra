@@ -8,6 +8,7 @@ function upd_battle()
 
   local ship_moved = false
   local enemies_left = 0
+  local player_ships_left = 0
   local bullet_count = 0
   for entity in all(entities) do
     if entity.type == "bullet" then
@@ -40,6 +41,10 @@ function upd_battle()
         enemies_left += 1
       end
 
+      if entity.owner == "player" then
+        player_ships_left += 1
+      end
+
       -- animate ship movement
       if animate_ship(entity) then
         ship_moved = true
@@ -53,7 +58,7 @@ function upd_battle()
       if battle_phase == "shoot" then
         if selecting_target and not shot_target then
           if entity.owner != "player" then
-            local x1, y1, x2, y2 = calc_range_vertices(selecting_target)
+            local x1, y1, x2, y2 = calc_range_vertices(selecting_target.x, selecting_target.y, selecting_target.max_range, selecting_target.angle)
             if is_enemy_in_range(entity.x, entity.y, selecting_target.x, selecting_target.y, x1, y1, x2, y2) then
               shot_target = entity
             end
@@ -63,34 +68,44 @@ function upd_battle()
     end
   end
 
-  if enemies_left == 0 and bullet_count == 0 then
-    _drw = drw_won
-    _upd = upd_won
+  -- check if the game is over
+  if bullet_count == 0 then
+    if enemies_left == 0 then
+      _drw = drw_won
+      _upd = upd_won
+    elseif player_ships_left == 0 then
+      _drw = drw_gameover
+      _upd = upd_gameover
+    end
   end
 
   if ship_moved then moving_ships = true else moving_ships = false end
 
   -- select the active ship
-  if bullet_count == 0 then select_ship() end
-  if not selected_ship then
-    reset_turn()
-    return
+  if not moving_ships then
+    if bullet_count == 0 then select_ship() end
+    if not selected_ship then
+      reset_turn()
+      return
+    end
   end
 
   -- enemy behaviour
-  if selected_ship.owner != "player" then
-    if battle_phase == "movement" then
-      move_enemy(selected_ship)
-    end
+  if not moving_ships then
+    if selected_ship.owner != "player" then
+      if battle_phase == "movement" then
+        enemy_move(selected_ship)
+      end
 
-    if battle_phase == "shoot" then
-      shoot_enemy(selected_ship)
+      if battle_phase == "shoot" then
+        enemy_shoot(selected_ship)
+      end
     end
   end
 
   -- interaction
 
-  if not moving_ships then
+  if not moving_ships and selected_ship.owner == "player" then
     if btnp(❎) then
       battle_button_x()
     end

@@ -48,9 +48,14 @@ function battle_button_x()
     if confirming_move then
       sfx(0)
       if selected_move_confirm_option == 1 then
+        local move_end = {}
         -- select ok in confirm mode menu
-        selecting_move.has_moved = true
-        move_ship()
+        if move_table[selected_move_option] == "straight" then
+          move_end = calc_move_end_position(selected_ship, "straight", move_speed)
+        else
+          move_end = calc_move_end_position(selected_ship, move_table[selected_move_option], move_speed, orientation_table[move_orientation])
+        end
+        move_ship(selected_ship, move_end.x, move_end.y, move_end.angle)
         return
       else
         -- selected cancel in confirm move menu
