@@ -32,10 +32,33 @@ function enemy_move_execute(ship, solutions)
     local move_end = calc_move_end_position(ship, solution.move_type, solution.speed, solution.direction)
     move_ship(ship, move_end.x, move_end.y, move_end.angle)
   else
-    -- move the ship at random
-    local move_type = rnd({ "straight", "turn", "bank" })
-    local speed = flr(rnd(ship.max_speed)) + 1
-    local direction = rnd({ "left", "right" })
+    -- move closer to the closest player ship
+    local player_ships = get_player_ships()
+    local closest_ship = nil
+    local closest_distance = 9999
+    for i, player_ship in ipairs(player_ships) do
+      local distance = get_ships_distance(ship, player_ship)
+      if distance < closest_distance then
+        closest_ship = player_ship
+        closest_distance = distance
+      end
+    end
+
+    local move_types = { "turn", "bank" }
+    local direction = "right"
+    if closest_ship.x < ship.x then
+      direction = "left"
+    end
+
+    local speed = 1
+    if closest_ship.y < ship.y then
+      speed = rnd(ship.max_speed)
+    end
+
+    -- pick a random move type
+    local move_type = rnd(move_types)
+
+    -- move the ship
     local move_end = calc_move_end_position(ship, move_type, speed, direction)
     move_ship(ship, move_end.x, move_end.y, move_end.angle)
   end
@@ -59,6 +82,9 @@ function search_player_ship(ship)
         -- for each move combination, check if the player ship would be in range
         -- if it is, add it to the potential solutions
         -- if not, continue to the next move combination
+
+        -- todo: si ningún movimiento es una solución este turno,
+        -- ejecutar el movimiento que más nos acerque a cualquier nave del jugador
 
         local move_types = { "straight", "turn", "bank" }
         local directions = { "right", "left" }
