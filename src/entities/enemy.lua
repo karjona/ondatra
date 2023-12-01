@@ -53,68 +53,34 @@ function search_player_ship(ship)
       -- if it is, add it to the potential solutions
       -- if not, continue to the next move combination
 
-      -- straight moves
-      for i = 1, ship.max_speed do
-        local move_end = calc_move_end_position(ship, "straight", i)
-        local distance = get_ships_distance(move_end, player_ship)
-        if distance <= ship.max_range * 8 then
-          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
-          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
-            add(solutions, { move_type = "straight", speed = i })
-          end
-        end
-      end
+      local move_types = { "straight", "turn", "bank" }
+      local directions = { "right", "left" }
 
-      -- right turns
-      for i = 1, ship.max_speed do
-        local move_end = calc_move_end_position(ship, "turn", i, "right")
-        local distance = get_ships_distance(move_end, player_ship)
-        if distance <= ship.max_range * 8 then
-          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
-          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
-            add(solutions, { move_type = "turn", speed = i, direction = "right" })
-          end
-        end
-      end
-
-      -- left turns
-      for i = 1, ship.max_speed do
-        local move_end = calc_move_end_position(ship, "turn", i, "left")
-        local distance = get_ships_distance(move_end, player_ship)
-        if distance <= ship.max_range * 8 then
-          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
-          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
-            add(solutions, { move_type = "turn", speed = i, direction = "left" })
-          end
-        end
-      end
-
-      -- right banks
-      for i = 1, ship.max_speed do
-        local move_end = calc_move_end_position(ship, "bank", i, "right")
-        local distance = get_ships_distance(move_end, player_ship)
-        if distance <= ship.max_range * 8 then
-          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
-          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
-            add(solutions, { move_type = "bank", speed = i, direction = "right" })
-          end
-        end
-      end
-
-      -- left banks
-      for i = 1, ship.max_speed do
-        local move_end = calc_move_end_position(ship, "bank", i, "left")
-        local distance = get_ships_distance(move_end, player_ship)
-        if distance <= ship.max_range * 8 then
-          local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
-          if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
-            add(solutions, { move_type = "bank", speed = i, direction = "left" })
+      for move_type in all(move_types) do
+        if move_type == "straight" then
+          calc_enemy_move_solutions(ship, player_ship, solutions, move_type)
+        else
+          for direction in all(directions) do
+            calc_enemy_move_solutions(ship, player_ship, solutions, move_type, direction)
           end
         end
       end
     end
 
     return solutions
+  end
+end
+
+function calc_enemy_move_solutions(ship, player_ship, solutions, move_type, direction)
+  for i = 1, ship.max_speed do
+    local move_end = calc_move_end_position(ship, move_type, i, direction)
+    local distance = get_ships_distance(move_end, player_ship)
+    if distance <= ship.max_range * 8 then
+      local x1, y1, x2, y2 = calc_range_vertices(move_end.x, move_end.y, ship.max_range, move_end.angle)
+      if is_enemy_in_range(player_ship.x, player_ship.y, move_end.x, move_end.y, x1, y1, x2, y2) then
+        add(solutions, { move_type = move_type, speed = i, direction = direction })
+      end
+    end
   end
 end
 
