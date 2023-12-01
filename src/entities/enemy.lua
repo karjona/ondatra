@@ -1,31 +1,43 @@
-function move_enemy(ship)
+function enemy_move(ship)
   if t() % 2 == 0 then
-    search_player_ship(ship)
+    local potential_targets = search_player_ship(ship)
     log("enemy moved")
   end
 end
 
-function shoot_enemy(ship)
-  log("enemy shoot!")
+function enemy_shoot(ship)
+  log("enemy shot!")
   ship.has_shot = true
 end
 
 function search_player_ship(ship)
-  -- the goal of this function is to see if there are player
-  -- ships in range of this enemy ship
-
-  -- player ships are in range when these conditions are met:
-  -- distance from enemy ship is <= 48
-  -- angle from enemy ship is +- 45 degrees
-
   -- get all player ships
   local player_ships = get_player_ships()
+  local potential_targets = {}
 
   -- for each player ship, check if it is in range
   for i, player_ship in ipairs(player_ships) do
     -- get distance from enemy ship to player ship
     log("player ship: " .. player_ship.x .. ", " .. player_ship.y)
-    local distance = get_distance(ship, player_ship)
+
+    --[[
+      - si esa nave del jugador está a más de el máximo movimiento + el máximo rango de
+      - disparo, esa nave ya no es potencial objetivo
+
+      - si esa nave del jugador está a +- 136º de la nave enemiga, esa nave ya no es
+      - potencial objetivo
+
+      - para todos los demás casos, calcular si alguno de los posibles movimientos que puede
+      - efectuar la nave, la ponen en rango de disparo de la nave del jugador
+    ]]
+
+    local distance = get_ships_distance(ship, player_ship)
+    log("distance: " .. distance)
+    local max_distance = ship.max_speed * 8 + ship.max_range * 8
+    if distance <= max_distance then
+    end
+
+    --[[
     if distance <= 36 then
       log("player ship in range: " .. distance)
       -- check if in correct angle
@@ -38,15 +50,17 @@ function search_player_ship(ship)
     elseif distance <= 70 then
       log("not in range but potentially in range if moving towards it")
     end
+    --]]
   end
 
   log("moving speed 1 straight")
   local move_end = calc_move_end_position(ship, "straight", 1)
   move_ship(ship, move_end.x, move_end.y, move_end.angle)
+  log("ship moved to: " .. ship.x .. ", " .. ship.y)
 
   -- no player ships are in range, return false
   --log("no player ships in range")
-  return false
+  return potential_targets
 end
 
 function get_player_ships()
@@ -59,7 +73,7 @@ function get_player_ships()
   return player_ships
 end
 
-function get_distance(ship1, ship2)
+function get_ships_distance(ship1, ship2)
   -- get the distance between two ships
   local x1 = ship1.x
   local y1 = ship1.y

@@ -16,17 +16,15 @@ function normalize_angle(angle)
   return normalized_angle
 end
 
-function calc_range_vertices(ship, range)
+function calc_range_vertices(ship)
   local x = ship.x
   local y = ship.y
+  local range = ship.max_range * 8
 
   local angle = normalize_angle(ship.angle)
 
   local a1 = (angle % 360 - 45) / 360
   local a2 = (angle % 360 + 45) / 360
-  if range == nil then
-    range = 48
-  end
 
   local x1 = range * cos(a1) + x
   local y1 = range * sin(a1) + y

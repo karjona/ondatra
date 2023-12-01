@@ -83,11 +83,11 @@ function upd_battle()
   if not moving_ships then
     if selected_ship.owner != "player" then
       if battle_phase == "movement" then
-        move_enemy(selected_ship)
+        enemy_move(selected_ship)
       end
 
       if battle_phase == "shoot" then
-        shoot_enemy(selected_ship)
+        enemy_shoot(selected_ship)
       end
     end
   end
