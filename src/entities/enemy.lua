@@ -52,7 +52,7 @@ function enemy_move_execute(ship, solutions)
 
     local speed = 1
     if closest_ship.y < ship.y then
-      speed = rnd(ship.max_speed)
+      speed = flr(rnd(ship.max_speed)) + 1
     end
 
     -- pick a random move type
