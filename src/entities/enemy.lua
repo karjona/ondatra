@@ -1,7 +1,8 @@
 function move_enemy(ship)
-  search_player_ship(ship)
-  log("enemy moved")
-  ship.has_moved = true
+  if t() % 2 == 0 then
+    search_player_ship(ship)
+    log("enemy moved")
+  end
 end
 
 function shoot_enemy(ship)

@@ -94,7 +94,7 @@ function upd_battle()
 
   -- interaction
 
-  if not moving_ships then
+  if not moving_ships and selected_ship.owner == "player" then
     if btnp(❎) then
       battle_button_x()
     end
