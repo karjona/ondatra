@@ -32,36 +32,40 @@ function enemy_move_execute(ship, solutions)
     local move_end = calc_move_end_position(ship, solution.move_type, solution.speed, solution.direction)
     move_ship(ship, move_end.x, move_end.y, move_end.angle)
   else
-    -- move closer to the closest player ship
-    local player_ships = get_player_ships()
-    local closest_ship = nil
-    local closest_distance = 9999
-    for i, player_ship in ipairs(player_ships) do
-      local distance = get_ships_distance(ship, player_ship)
-      if distance < closest_distance then
-        closest_ship = player_ship
-        closest_distance = distance
-      end
-    end
-
-    local move_types = { "turn", "bank" }
-    local direction = "right"
-    if closest_ship.x < ship.x then
-      direction = "left"
-    end
-
-    local speed = 1
-    if closest_ship.y < ship.y then
-      speed = flr(rnd(ship.max_speed)) + 1
-    end
-
-    -- pick a random move type
-    local move_type = rnd(move_types)
-
-    -- move the ship
-    local move_end = calc_move_end_position(ship, move_type, speed, direction)
+    local move_end = search_for_closest_ship(ship)
     move_ship(ship, move_end.x, move_end.y, move_end.angle)
   end
+end
+
+function search_for_closest_ship(ship)
+  -- we found no solution that puts us in range of any player ship
+  -- move closer to the closest player ship
+  local player_ships = get_player_ships()
+  local closest_ship = nil
+  local closest_distance = 9999
+  for i, player_ship in ipairs(player_ships) do
+    local distance = get_ships_distance(ship, player_ship)
+    if distance < closest_distance then
+      closest_ship = player_ship
+      closest_distance = distance
+    end
+  end
+
+  local move_types = { "turn", "bank" }
+  local direction = "right"
+  if closest_ship.x < ship.x then
+    direction = "left"
+  end
+
+  local speed = 1
+  if closest_ship.y < ship.y then
+    speed = flr(rnd(ship.max_speed)) + 1
+  end
+
+  -- pick a random move type
+  local move_type = rnd(move_types)
+  local move_end = calc_move_end_position(ship, move_type, speed, direction)
+  return move_end
 end
 
 function search_player_ship(ship)
@@ -106,9 +110,9 @@ function search_player_ship(ship)
         end
       end
     end
-
-    return solutions
   end
+
+  return solutions
 end
 
 function calc_enemy_move_solutions(ship, player_ship, solutions, move_type, direction)
