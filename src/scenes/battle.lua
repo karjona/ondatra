@@ -74,53 +74,53 @@ function upd_battle()
 
   if ship_moved then moving_ships = true else moving_ships = false end
 
-  -- select the active ship
+  -- game logic
   if not moving_ships then
-    if bullet_count == 0 then select_ship() end
-    if not selected_ship then
-      reset_turn()
-      return
-    end
-  end
-
-  -- enemy behaviour
-  if not moving_ships then
-    if selected_ship.owner != "player" then
-      if battle_phase == "movement" then
-        enemy_move(selected_ship)
+    if bullet_count == 0 then
+      -- select the active ship or reset the turn
+      select_ship()
+      if not selected_ship then
+        reset_turn()
+        return
       end
 
-      if battle_phase == "shoot" then
-        enemy_shoot(selected_ship)
+      -- enemy behaviour
+      if selected_ship.owner != "player" then
+        if battle_phase == "movement" then
+          enemy_move(selected_ship)
+        end
+
+        if battle_phase == "shoot" then
+          enemy_shoot(selected_ship)
+        end
       end
-    end
-  end
 
-  -- interaction
+      -- interaction
+      if selected_ship.owner == "player" then
+        if btnp(❎) then
+          battle_button_x()
+        end
 
-  if not moving_ships and selected_ship.owner == "player" then
-    if btnp(❎) then
-      battle_button_x()
-    end
+        if btnp(🅾️) then
+          battle_button_o()
+        end
 
-    if btnp(🅾️) then
-      battle_button_o()
-    end
+        if btnp(⬆️) then
+          battle_button_up()
+        end
 
-    if btnp(⬆️) then
-      battle_button_up()
-    end
+        if btnp(⬇️) then
+          battle_button_down()
+        end
 
-    if btnp(⬇️) then
-      battle_button_down()
-    end
+        if btnp(⬅️) then
+          battle_button_left()
+        end
 
-    if btnp(⬅️) then
-      battle_button_left()
-    end
-
-    if btnp(➡️) then
-      battle_button_right()
+        if btnp(➡️) then
+          battle_button_right()
+        end
+      end
     end
   end
 end
