@@ -184,7 +184,7 @@ function drw_battle()
             and not selecting_move then
           print("❎ move", 91, 1, 7)
         elseif battle_phase == "shoot" then
-          if not shot_target then
+          if not shot_target and not selecting_target then
             print("❎ shoot", 91, 1, 7)
           end
         end
