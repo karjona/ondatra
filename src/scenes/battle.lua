@@ -13,19 +13,12 @@ function upd_battle()
   for entity in all(entities) do
     if entity.type == "bullet" then
       bullet_count += 1
-      if entity.x < entity.tx then
-        entity.x += 1
-      elseif entity.x > entity.tx then
-        entity.x -= 1
-      end
 
-      if entity.y < entity.ty then
-        entity.y += 1
-      elseif entity.y > entity.ty then
-        entity.y -= 1
-      end
+      -- animate bullet movement
+      entity.x += entity.sx
+      entity.y += entity.sy
 
-      if entity.x == entity.tx and entity.y == entity.ty then
+      if collide(entity.x, entity.y, 8, 8, entity.tx, entity.ty, 8, 8) then
         del(entities, entity)
         entity.target.health = 0
       end
