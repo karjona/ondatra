@@ -1,5 +1,5 @@
 function create_bullet(from, to)
-  local speed = 1
+  local speed = 2
   local type = "bullet"
 
   local angle = atan2(to.y - from.y, to.x - from.x)
@@ -13,14 +13,22 @@ function create_bullet(from, to)
     sy = cos(angle) * speed,
     target = to,
     type = type,
-    speed = speed
+    speed = speed,
+    animation = { 96, 97, 98, 99, 98, 97 },
+    frame = 1,
+    animation_speed = 0.5
   }
 
   add(entities, mybullet)
 end
 
 function draw_bullet(bullet)
-  circfill(bullet.x, bullet.y, 3, 8)
+  bullet.frame += bullet.animation_speed
+  if flr(bullet.frame) > #bullet.animation then
+    bullet.frame = 1
+  end
+  log("bullet sprite:" .. bullet.animation[flr(bullet.frame)])
+  spr(bullet.animation[flr(bullet.frame)], bullet.x, bullet.y, 1, 1)
 end
 
 function collide(ax, ay, aw, ah, bx, by, bw, bh)
