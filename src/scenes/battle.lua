@@ -21,6 +21,9 @@ function upd_battle()
       if collide(entity.x, entity.y, 8, 8, entity.tx, entity.ty, 8, 8) then
         del(entities, entity)
         --shockwave(entity.tx, entity.ty)
+        if entity.target.owner == "player" then
+          camera_shake = 12
+        end
         entity.target.health = 0
       end
     end
@@ -131,6 +134,7 @@ function upd_battle()
 end
 
 function drw_battle()
+  shake_camera()
   draw_bg(level)
 
   -- draw entities
