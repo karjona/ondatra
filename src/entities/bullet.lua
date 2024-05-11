@@ -27,7 +27,6 @@ function draw_bullet(bullet)
   if flr(bullet.frame) > #bullet.animation then
     bullet.frame = 1
   end
-  log("bullet sprite:" .. bullet.animation[flr(bullet.frame)])
   spr(bullet.animation[flr(bullet.frame)], bullet.x, bullet.y, 1, 1)
 end
 
