@@ -29,7 +29,7 @@ function upd_battle()
       -- destroy ship if health is 0
       if entity.health <= 0 then
         del(entities, entity)
-        explode(entity.x, entity.y)
+        explode(entity.x + 4, entity.y + 4)
       end
 
       if entity.owner == "cpu" then
