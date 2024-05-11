@@ -20,6 +20,7 @@ function upd_battle()
 
       if collide(entity.x, entity.y, 8, 8, entity.tx, entity.ty, 8, 8) then
         del(entities, entity)
+        --shockwave(entity.tx, entity.ty)
         entity.target.health = 0
       end
     end
@@ -28,6 +29,7 @@ function upd_battle()
       -- destroy ship if health is 0
       if entity.health <= 0 then
         del(entities, entity)
+        explode(entity.x, entity.y)
       end
 
       if entity.owner == "cpu" then
@@ -63,12 +65,15 @@ function upd_battle()
 
   -- check if the game is over
   if bullet_count == 0 then
-    if enemies_left == 0 then
-      _drw = drw_won
-      _upd = upd_won
-    elseif player_ships_left == 0 then
-      _drw = drw_gameover
-      _upd = upd_gameover
+    -- if there are no particles left
+    if particles[1] == nil then
+      if enemies_left == 0 then
+        _drw = drw_won
+        _upd = upd_won
+      elseif player_ships_left == 0 then
+        _drw = drw_gameover
+        _upd = upd_gameover
+      end
     end
   end
 
@@ -142,6 +147,11 @@ function drw_battle()
     end
   end
   if selected_ship and not moving_ships then draw_selsquare(selected_ship) end
+
+  -- draw particles
+  for particle in all(particles) do
+    draw_particle(particle)
+  end
 
   if battle_phase == "shoot" then
     -- draw shoot menu

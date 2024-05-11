@@ -38,6 +38,7 @@ function start_game()
   shot_target = nil
 
   entities = {}
+  particles = {}
 
   -- debug radio messages
   say("a.", "hello! this is a test radio message!", true)
