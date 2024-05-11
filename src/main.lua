@@ -37,7 +37,11 @@ function start_game()
   selecting_target = nil
   shot_target = nil
 
+  camera_shake = 0
+  final_flash = 0
+
   entities = {}
+  particles = {}
 
   -- debug radio messages
   say("a.", "hello! this is a test radio message!", true)

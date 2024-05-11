@@ -10,6 +10,26 @@ function upd_battle()
   local enemies_left = 0
   local player_ships_left = 0
   local bullet_count = 0
+
+  -- final flash
+  if final_flash >= 1 then
+    final_flash_animation()
+    return
+  end
+
+  -- count the number of player ships and enemies
+  for entity in all(entities) do
+    if entity.type == "ship" then
+      if entity.owner == "cpu" then
+        enemies_left += 1
+      end
+
+      if entity.owner == "player" then
+        player_ships_left += 1
+      end
+    end
+  end
+
   for entity in all(entities) do
     if entity.type == "bullet" then
       bullet_count += 1
@@ -20,6 +40,10 @@ function upd_battle()
 
       if collide(entity.x, entity.y, 8, 8, entity.tx, entity.ty, 8, 8) then
         del(entities, entity)
+        --shockwave(entity.tx, entity.ty)
+        if entity.target.owner == "player" then
+          camera_shake = 12
+        end
         entity.target.health = 0
       end
     end
@@ -27,15 +51,15 @@ function upd_battle()
     if entity.type == "ship" then
       -- destroy ship if health is 0
       if entity.health <= 0 then
-        del(entities, entity)
-      end
-
-      if entity.owner == "cpu" then
-        enemies_left += 1
-      end
-
-      if entity.owner == "player" then
-        player_ships_left += 1
+        -- if this is the last ship of the player, prepare for the final flash
+        if entity.owner == "player" and player_ships_left == 1 then
+          final_flash = 3
+          final_flash_entity = entity
+          explode(entity.x + flr(rnd(9)), entity.y + flr(rnd(9)))
+        else
+          explode(entity.x + 4, entity.y + 4)
+          del(entities, entity)
+        end
       end
 
       -- animate ship movement
@@ -63,12 +87,17 @@ function upd_battle()
 
   -- check if the game is over
   if bullet_count == 0 then
-    if enemies_left == 0 then
-      _drw = drw_won
-      _upd = upd_won
-    elseif player_ships_left == 0 then
-      _drw = drw_gameover
-      _upd = upd_gameover
+    -- if there are no particles left
+    if particles[1] == nil then
+      if enemies_left == 0 then
+        _drw = drw_won
+        _upd = upd_won
+      elseif player_ships_left == 0 then
+        if final_flash == 0 then
+          _drw = drw_gameover
+          _upd = upd_gameover
+        end
+      end
     end
   end
 
@@ -126,6 +155,7 @@ function upd_battle()
 end
 
 function drw_battle()
+  shake_camera()
   draw_bg(level)
 
   -- draw entities
@@ -142,6 +172,11 @@ function drw_battle()
     end
   end
   if selected_ship and not moving_ships then draw_selsquare(selected_ship) end
+
+  -- draw particles
+  for particle in all(particles) do
+    draw_particle(particle)
+  end
 
   if battle_phase == "shoot" then
     -- draw shoot menu

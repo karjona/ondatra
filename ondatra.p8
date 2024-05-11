@@ -1,5 +1,5 @@
 pico-8 cartridge // http://www.pico-8.com
-version 41
+version 42
 __lua__
 -- battle for ondatra
 -- a game for game off 2023
@@ -26,11 +26,13 @@ __lua__
 #include src/utilities/shots.lua
 #include src/utilities/menus.lua
 #include src/utilities/buttons.lua
+#include src/utilities/explosions.lua
 
 -- entities
 #include src/entities/ship.lua
 #include src/entities/enemy.lua
 #include src/entities/bullet.lua
+#include src/entities/particles.lua
 
 -- levels
 #include src/levels/1.lua
