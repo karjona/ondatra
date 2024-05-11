@@ -13,19 +13,12 @@ function upd_battle()
   for entity in all(entities) do
     if entity.type == "bullet" then
       bullet_count += 1
-      if entity.x < entity.tx then
-        entity.x += 1
-      elseif entity.x > entity.tx then
-        entity.x -= 1
-      end
 
-      if entity.y < entity.ty then
-        entity.y += 1
-      elseif entity.y > entity.ty then
-        entity.y -= 1
-      end
+      -- animate bullet movement
+      entity.x += entity.sx
+      entity.y += entity.sy
 
-      if entity.x == entity.tx and entity.y == entity.ty then
+      if collide(entity.x, entity.y, 8, 8, entity.tx, entity.ty, 8, 8) then
         del(entities, entity)
         entity.target.health = 0
       end
@@ -81,53 +74,53 @@ function upd_battle()
 
   if ship_moved then moving_ships = true else moving_ships = false end
 
-  -- select the active ship
+  -- game logic
   if not moving_ships then
-    if bullet_count == 0 then select_ship() end
-    if not selected_ship then
-      reset_turn()
-      return
-    end
-  end
-
-  -- enemy behaviour
-  if not moving_ships then
-    if selected_ship.owner != "player" then
-      if battle_phase == "movement" then
-        enemy_move(selected_ship)
+    if bullet_count == 0 then
+      -- select the active ship or reset the turn
+      select_ship()
+      if not selected_ship then
+        reset_turn()
+        return
       end
 
-      if battle_phase == "shoot" then
-        enemy_shoot(selected_ship)
+      -- enemy behaviour
+      if selected_ship.owner != "player" then
+        if battle_phase == "movement" then
+          enemy_move(selected_ship)
+        end
+
+        if battle_phase == "shoot" then
+          enemy_shoot(selected_ship)
+        end
       end
-    end
-  end
 
-  -- interaction
+      -- interaction
+      if selected_ship.owner == "player" then
+        if btnp(❎) then
+          battle_button_x()
+        end
 
-  if not moving_ships and selected_ship.owner == "player" then
-    if btnp(❎) then
-      battle_button_x()
-    end
+        if btnp(🅾️) then
+          battle_button_o()
+        end
 
-    if btnp(🅾️) then
-      battle_button_o()
-    end
+        if btnp(⬆️) then
+          battle_button_up()
+        end
 
-    if btnp(⬆️) then
-      battle_button_up()
-    end
+        if btnp(⬇️) then
+          battle_button_down()
+        end
 
-    if btnp(⬇️) then
-      battle_button_down()
-    end
+        if btnp(⬅️) then
+          battle_button_left()
+        end
 
-    if btnp(⬅️) then
-      battle_button_left()
-    end
-
-    if btnp(➡️) then
-      battle_button_right()
+        if btnp(➡️) then
+          battle_button_right()
+        end
+      end
     end
   end
 end
@@ -191,7 +184,7 @@ function drw_battle()
             and not selecting_move then
           print("❎ move", 91, 1, 7)
         elseif battle_phase == "shoot" then
-          if not shot_target then
+          if not shot_target and not selecting_target then
             print("❎ shoot", 91, 1, 7)
           end
         end

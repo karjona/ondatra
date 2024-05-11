@@ -78,6 +78,7 @@ function battle_button_x()
         selecting_target = nil
         shot_target = nil
       else
+        -- no ships to shoot, pass the turn
         sfx(0)
         selecting_target.has_shot = true
         selecting_target = nil
