@@ -44,3 +44,23 @@ function shake_camera()
     camera_shake = 0
   end
 end
+
+function final_flash_animation()
+  local explx = flr(rnd(9))
+  local exply = flr(rnd(9))
+
+  if final_flash == 1 then
+    explx = 4
+    exply = 4
+  end
+
+  if t() % 1 == 0 then
+    explode(final_flash_entity.x + flr(rnd(9)), final_flash_entity.y + flr(rnd(9)))
+    final_flash -= 1
+    camera_shake = 3
+  end
+
+  if final_flash == 0 then
+    del(entities, final_flash_entity)
+  end
+end

@@ -38,6 +38,7 @@ function start_game()
   shot_target = nil
 
   camera_shake = 0
+  final_flash = 0
 
   entities = {}
   particles = {}

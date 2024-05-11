@@ -10,6 +10,26 @@ function upd_battle()
   local enemies_left = 0
   local player_ships_left = 0
   local bullet_count = 0
+
+  -- final flash
+  if final_flash >= 1 then
+    final_flash_animation()
+    return
+  end
+
+  -- count the number of player ships and enemies
+  for entity in all(entities) do
+    if entity.type == "ship" then
+      if entity.owner == "cpu" then
+        enemies_left += 1
+      end
+
+      if entity.owner == "player" then
+        player_ships_left += 1
+      end
+    end
+  end
+
   for entity in all(entities) do
     if entity.type == "bullet" then
       bullet_count += 1
@@ -31,16 +51,15 @@ function upd_battle()
     if entity.type == "ship" then
       -- destroy ship if health is 0
       if entity.health <= 0 then
-        del(entities, entity)
-        explode(entity.x + 4, entity.y + 4)
-      end
-
-      if entity.owner == "cpu" then
-        enemies_left += 1
-      end
-
-      if entity.owner == "player" then
-        player_ships_left += 1
+        -- if this is the last ship of the player, prepare for the final flash
+        if entity.owner == "player" and player_ships_left == 1 then
+          final_flash = 3
+          final_flash_entity = entity
+          explode(entity.x + flr(rnd(9)), entity.y + flr(rnd(9)))
+        else
+          explode(entity.x + 4, entity.y + 4)
+          del(entities, entity)
+        end
       end
 
       -- animate ship movement
@@ -74,8 +93,10 @@ function upd_battle()
         _drw = drw_won
         _upd = upd_won
       elseif player_ships_left == 0 then
-        _drw = drw_gameover
-        _upd = upd_gameover
+        if final_flash == 0 then
+          _drw = drw_gameover
+          _upd = upd_gameover
+        end
       end
     end
   end
