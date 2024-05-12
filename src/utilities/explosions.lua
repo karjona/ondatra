@@ -50,6 +50,7 @@ end
 function final_flash_animation()
   local explx = flr(rnd(9))
   local exply = flr(rnd(9))
+  camera_shake = 16
 
   if final_flash == 1 then
     explx = 4
