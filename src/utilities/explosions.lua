@@ -11,6 +11,8 @@ function explode(x, y)
   myexpl.sy = 0
   add(particles, myexpl)
 
+  sfx(1)
+
   -- add some smaller explosions
   for i = 1, 20 do
     local myexpl = {}
