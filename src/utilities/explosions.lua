@@ -1,4 +1,4 @@
-function explode(x, y)
+function explode(x, y, type)
   -- add a big explosion centered on the entity
   local myexpl = {}
   myexpl.x = x
@@ -11,7 +11,11 @@ function explode(x, y)
   myexpl.sy = 0
   add(particles, myexpl)
 
-  sfx(1)
+  if type == "player" then
+    sfx(1)
+  else
+    sfx(2)
+  end
 
   -- add some smaller explosions
   for i = 1, 20 do
@@ -58,7 +62,7 @@ function final_flash_animation()
   end
 
   if t() % 1 == 0 then
-    explode(final_flash_entity.x + flr(rnd(9)), final_flash_entity.y + flr(rnd(9)))
+    explode(final_flash_entity.x + flr(rnd(9)), final_flash_entity.y + flr(rnd(9)), "player")
     final_flash -= 1
     camera_shake = 3
   end

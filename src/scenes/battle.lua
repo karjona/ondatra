@@ -55,7 +55,7 @@ function upd_battle()
         if entity.owner == "player" and player_ships_left == 1 then
           final_flash = 3
           final_flash_entity = entity
-          explode(entity.x + flr(rnd(9)), entity.y + flr(rnd(9)))
+          explode(entity.x + flr(rnd(9)), entity.y + flr(rnd(9)), "player")
         else
           explode(entity.x + 4, entity.y + 4)
           del(entities, entity)
